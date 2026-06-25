@@ -1,0 +1,431 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// ENUMS
+// ========================================
+enum UserRole {
+  super_admin
+  gym_owner
+  gym_manager
+  cashier
+  trainer
+}
+
+enum GymStatus {
+  active
+  suspended
+  trial
+  cancelled
+}
+
+enum SubscriptionStatus {
+  active
+  expired
+  frozen
+  cancelled
+}
+
+enum PaymentMethod {
+  cash
+  instapay
+  vodafone_cash
+  bank_transfer
+  other
+}
+
+enum PaymentStatus {
+  paid
+  pending
+  partial
+  refunded
+}
+
+enum AddonKey {
+  expenses
+  staff
+  trainers
+  classes
+  branches
+  advanced_reports
+  extra_branch
+}
+
+enum GenderType {
+  male
+  female
+}
+
+enum BillingCycle {
+  monthly
+  quarterly
+  annual
+}
+
+// ========================================
+// GYMS
+// ========================================
+model Gym {
+  id              String      @id @default(uuid())
+  name            String
+  slug            String      @unique
+  logoUrl         String?     @map("logo_url")
+  phone           String?
+  address         String?
+  city            String?
+  ownerName       String      @map("owner_name")
+  ownerPhone      String      @map("owner_phone")
+  ownerEmail      String      @unique @map("owner_email")
+  status          GymStatus   @default(trial)
+  trialEndsAt     DateTime    @default(now()) @map("trial_ends_at")
+  basePlanPrice   Int         @default(299) @map("base_plan_price")
+  billingCycle    BillingCycle @default(monthly) @map("billing_cycle")
+  nextBillingDate DateTime?   @map("next_billing_date")
+  lastPaidAt      DateTime?   @map("last_paid_at")
+  addons          AddonKey[]
+  currency        String      @default("EGP")
+  timezone        String      @default("Africa/Cairo")
+  adminNotes      String?     @map("admin_notes")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  branches      Branch[]
+  profiles      Profile[]
+  members       Member[]
+  gymPlans      GymPlan[]
+  subscriptions Subscription[]
+  payments      Payment[]
+  expenses      Expense[]
+  classes       ClassRoom[]
+  classBookings ClassBooking[]
+  gymInvoices   GymInvoice[]
+  addonChanges  AddonChange[]
+
+  @@map("gyms")
+}
+
+// ========================================
+// BRANCHES
+// ========================================
+model Branch {
+  id        String   @id @default(uuid())
+  gymId     String   @map("gym_id")
+  name      String
+  address   String?
+  phone     String?
+  isMain    Boolean  @default(false) @map("is_main")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  gym           Gym            @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  profiles      Profile[]
+  members       Member[]
+  subscriptions Subscription[]
+  expenses      Expense[]
+  classes       ClassRoom[]
+
+  @@map("branches")
+}
+
+// ========================================
+// PROFILES
+// ========================================
+model Profile {
+  id        String   @id @default(uuid())
+  gymId     String?  @map("gym_id")
+  branchId  String?  @map("branch_id")
+  role      UserRole @default(gym_owner)
+  fullName  String?  @map("full_name")
+  phone     String?
+  avatarUrl String?  @map("avatar_url")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  gym            Gym?          @relation(fields: [gymId], references: [id], onDelete: SetNull)
+  branch         Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  payments       Payment[]     @relation("CreatedBy")
+  trainedMembers Member[]      @relation("TrainerOf")
+  classesTrained ClassRoom[]
+
+  @@map("profiles")
+}
+
+// ========================================
+// GYM PLANS
+// ========================================
+model GymPlan {
+  id          String   @id @default(uuid())
+  gymId       String   @map("gym_id")
+  name        String
+  duration    Int
+  price       Float
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  gym           Gym             @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+
+  @@map("gym_plans")
+}
+
+// ========================================
+// MEMBERS
+// ========================================
+model Member {
+  id           String     @id @default(uuid())
+  gymId        String     @map("gym_id")
+  branchId     String?    @map("branch_id")
+  trainerId    String?    @map("trainer_id")
+  fullName     String     @map("full_name")
+  phone        String?
+  gender       GenderType?
+  birthDate    DateTime?  @map("birth_date")
+  photoUrl     String?    @map("photo_url")
+  nationalId   String?    @map("national_id")
+  address      String?
+  isActive     Boolean    @default(true) @map("is_active")
+  notes        String?
+  memberNumber String?    @unique @map("member_number")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  gym            Gym            @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  branch         Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  trainer        Profile?       @relation("TrainerOf", fields: [trainerId], references: [id], onDelete: SetNull)
+  subscriptions  Subscription[]
+  payments       Payment[]
+  classBookings  ClassBooking[]
+
+  @@map("members")
+}
+
+// ========================================
+// SUBSCRIPTIONS
+// ========================================
+model Subscription {
+  id         String             @id @default(uuid())
+  gymId      String             @map("gym_id")
+  memberId   String             @map("member_id")
+  planId     String             @map("plan_id")
+  branchId   String?            @map("branch_id")
+  startDate  DateTime           @map("start_date")
+  endDate    DateTime           @map("end_date")
+  price      Float
+  discount   Float              @default(0)
+  finalPrice Float              @map("final_price")
+  status     SubscriptionStatus @default(active)
+  frozenAt   DateTime?          @map("frozen_at")
+  frozenDays Int                @default(0) @map("frozen_days")
+  unfrozenAt DateTime?          @map("unfrozen_at")
+  notes      String?
+  createdBy  String?            @map("created_by")
+  createdAt  DateTime           @default(now()) @map("created_at")
+  updatedAt  DateTime           @updatedAt @map("updated_at")
+
+  gym      Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  member   Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  plan     GymPlan  @relation(fields: [planId], references: [id])
+  branch   Branch?  @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  payments Payment[]
+
+  @@map("subscriptions")
+}
+
+// ========================================
+// PAYMENTS
+// ========================================
+model Payment {
+  id              String        @id @default(uuid())
+  gymId           String        @map("gym_id")
+  memberId        String        @map("member_id")
+  subscriptionId  String?       @map("subscription_id")
+  amount          Float
+  discount        Float         @default(0)
+  finalAmount     Float         @map("final_amount")
+  method          PaymentMethod @default(cash)
+  status          PaymentStatus @default(paid)
+  referenceNumber String?       @map("reference_number")
+  notes           String?
+  receiptUrl      String?       @map("receipt_url")
+  paidAt          DateTime      @default(now()) @map("paid_at")
+  createdBy       String?       @map("created_by")
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  gym          Gym          @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  member       Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  creator      Profile?     @relation("CreatedBy", fields: [createdBy], references: [id])
+
+  @@map("payments")
+}
+
+// ========================================
+// EXPENSES
+// ========================================
+model Expense {
+  id          String   @id @default(uuid())
+  gymId       String   @map("gym_id")
+  branchId    String?  @map("branch_id")
+  category    String
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  receiptUrl  String?  @map("receipt_url")
+  createdBy   String?  @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  gym    Gym    @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  branch Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  @@map("expenses")
+}
+
+// ========================================
+// CLASSES
+// ========================================
+model ClassRoom {
+  id          String     @id @default(uuid())
+  gymId       String     @map("gym_id")
+  branchId    String?    @map("branch_id")
+  trainerId   String?    @map("trainer_id")
+  name        String
+  description String?
+  capacity    Int        @default(20)
+  price       Float      @default(0)
+  dayOfWeek   Int[]
+  startTime   DateTime?
+  duration    Int?
+  isActive    Boolean    @default(true) @map("is_active")
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  gym      Gym           @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  branch   Branch?       @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  trainer  Profile?      @relation(fields: [trainerId], references: [id])
+  bookings ClassBooking[]
+
+  @@map("classes")
+}
+
+// ========================================
+// CLASS BOOKINGS
+// ========================================
+model ClassBooking {
+  id        String   @id @default(uuid())
+  classId   String   @map("class_id")
+  memberId  String   @map("member_id")
+  gymId     String   @map("gym_id")
+  bookedAt  DateTime @default(now()) @map("booked_at")
+  attended  Boolean  @default(false)
+
+  class_ ClassRoom @relation(fields: [classId], references: [id], onDelete: Cascade)
+  member Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  gym    Gym       @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, memberId, bookedAt])
+  @@map("class_bookings")
+}
+
+// ========================================
+// GYM INVOICES
+// ========================================
+model GymInvoice {
+  id           String        @id @default(uuid())
+  gymId        String        @map("gym_id")
+  baseAmount   Int           @map("base_amount")
+  addonsAmount Int           @default(0) @map("addons_amount")
+  totalAmount  Int           @map("total_amount")
+  addonsDetail Json          @default("[]") @map("addons_detail")
+  periodStart  DateTime      @map("period_start")
+  periodEnd    DateTime      @map("period_end")
+  method       String?
+  status       PaymentStatus @default(pending)
+  paidAt       DateTime?     @map("paid_at")
+  notes        String?
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@map("gym_invoices")
+}
+
+// ========================================
+// ADDON CHANGE LOG
+// ========================================
+model AddonChange {
+  id        String   @id @default(uuid())
+  gymId     String   @map("gym_id")
+  addon     AddonKey
+  action    String
+  priceDiff Int      @map("price_diff")
+  changedAt DateTime @default(now()) @map("changed_at")
+  effective String
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@map("addon_changes")
+}
+
+// ========================================
+// NEXT AUTH TABLES
+// ========================================
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  accounts Account[]
+  sessions Session[]
+}

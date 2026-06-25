@@ -1,0 +1,159 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
+import { Dumbbell, Mail, Lock, ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react'
+
+export default function LoginPage() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    })
+
+    if (result?.error) {
+      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
+      setLoading(false)
+    } else if (result?.ok) {
+      // Fetch session to determine role
+      const res = await fetch('/api/auth/session')
+      const session = await res.json()
+      if (session?.user?.role === 'super_admin') {
+        router.push('/admin')
+      } else {
+        router.push('/dashboard')
+      }
+      router.refresh()
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4 grid-bg relative overflow-hidden">
+      {/* Background glows */}
+      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[#22C55E]/10 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo */}
+        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
+          <div className="w-12 h-12 rounded-xl bg-[#22C55E] flex items-center justify-center">
+            <Dumbbell className="w-6 h-6 text-white" />
+          </div>
+          <span className="font-cairo font-bold text-2xl">
+            Open<span className="text-[#22C55E]">Gym</span>
+          </span>
+        </Link>
+
+        <div className="glass-card p-8 rounded-2xl">
+          <h1 className="font-cairo font-bold text-2xl text-center mb-2">
+            مرحباً بك
+          </h1>
+          <p className="text-[#94A3B8] text-center mb-8">
+            سجّل دخولك للوحة التحكم
+          </p>
+
+          {error && (
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                البريد الإلكتروني
+              </label>
+              <div className="relative">
+                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  dir="ltr"
+                  className="w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-[#64748B] focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                كلمة المرور
+              </label>
+              <div className="relative">
+                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  dir="ltr"
+                  className="w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 pr-11 pl-11 text-white placeholder:text-[#64748B] focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-white"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#22C55E] text-white rounded-xl font-semibold hover:bg-[#16A34A] transition-all hover:shadow-lg hover:shadow-[#22C55E]/30 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  تسجيل الدخول
+                  <ArrowLeft className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-[#94A3B8]">
+              ليك حساب جديد؟{' '}
+              <Link
+                href="/register"
+                className="text-[#22C55E] font-medium hover:underline"
+              >
+                سجّل جيمك
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        <p className="text-center mt-6 text-sm text-[#64748B]">
+          <Link href="/" className="hover:text-[#22C55E] transition-colors">
+            ← العودة للرئيسية
+          </Link>
+        </p>
+      </div>
+    </div>
+  )
+}
