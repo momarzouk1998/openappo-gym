@@ -95,7 +95,7 @@ export function usePushNotifications() {
       // 5. Subscribe via PushManager
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey,
+        applicationServerKey: applicationServerKey as BufferSource,
       })
 
       // 6. Send subscription to server
@@ -158,7 +158,8 @@ export function usePushNotifications() {
 }
 
 /**
- * Convert a base64 VAPID key to Uint8Array (browser-compatible).
+ * Convert a base64 VAPID key to a Uint8Array backed by a real ArrayBuffer
+ * (required by PushManager.subscribe's applicationServerKey typing).
  */
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
@@ -166,7 +167,8 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
     .replace(/-/g, '+')
     .replace(/_/g, '/')
   const rawData = atob(base64)
-  const outputArray = new Uint8Array(rawData.length)
+  const buffer = new ArrayBuffer(rawData.length)
+  const outputArray = new Uint8Array(buffer)
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i)
   }
