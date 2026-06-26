@@ -10,6 +10,12 @@ import type { NextAuthConfig } from 'next-auth'
  * The jwt callback here is a pass-through: `role` / `gymId` are already encoded into the
  * JWT cookie at sign-in time by the node config, so the edge runtime just reads them back.
  */
+
+// In production the app runs on HTTPS, so we use the __Secure- prefix.
+// In development (localhost / HTTP) the browser silently drops __Secure- cookies,
+// so we fall back to the plain names.
+const isProd = process.env.NODE_ENV === 'production'
+
 export const authConfig = {
   trustHost: true,
   pages: {
@@ -20,29 +26,35 @@ export const authConfig = {
   // looks like HTTP, which would otherwise make the cookie-name detection disagree.
   cookies: {
     sessionToken: {
-      name: '__Secure-authjs.session-token',
+      name: isProd
+        ? '__Secure-authjs.session-token'
+        : 'authjs.session-token',
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         path: '/',
-        secure: true,
+        secure: isProd,
       },
     },
     csrfToken: {
-      name: '__Secure-authjs.csrf-token',
+      name: isProd
+        ? '__Secure-authjs.csrf-token'
+        : 'authjs.csrf-token',
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         path: '/',
-        secure: true,
+        secure: isProd,
       },
     },
     callbackUrl: {
-      name: '__Secure-authjs.callback-url',
+      name: isProd
+        ? '__Secure-authjs.callback-url'
+        : 'authjs.callback-url',
       options: {
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         path: '/',
-        secure: true,
+        secure: isProd,
       },
     },
   },

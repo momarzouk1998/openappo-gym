@@ -19,24 +19,33 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
 
-    if (result?.error) {
-      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
-      setLoading(false)
-    } else if (result?.ok) {
-      // Fetch session to determine role
-      const res = await fetch('/api/auth/session')
-      const session = await res.json()
-      if (session?.user?.role === 'super_admin') {
-        router.push('/admin')
+      if (result?.error) {
+        setError('البريد الإلكتروني أو كلمة المرور غير صحيحة')
+      } else if (result?.ok) {
+        // Fetch session to determine role
+        const res = await fetch('/api/auth/session')
+        const session = await res.json()
+        if (session?.user?.role === 'super_admin') {
+          router.push('/admin')
+        } else {
+          router.push('/dashboard')
+        }
       } else {
-        router.push('/dashboard')
+        // Fallback: result is neither ok nor error (e.g. network hiccup)
+        setError('حدث خطأ أثناء تسجيل الدخول، حاول مرة أخرى')
       }
+    } catch {
+      setError('تعذّر الاتصال بالسيرفر، تحقق من الإنترنت وحاول مرة أخرى')
+    } finally {
+      // Always reset loading — button never gets stuck
+      setLoading(false)
     }
   }
 
