@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { motion } from 'motion/react'
 import {
   CreditCard,
   Wallet,
@@ -55,46 +55,50 @@ const features = [
   },
 ]
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 100, damping: 14 },
+  },
+}
+
 export function Features() {
-  const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
-    if (prefersReducedMotion) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-up')
-            entry.target.classList.remove('opacity-0')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.15 }
-    )
-
-    const cards = sectionRef.current?.querySelectorAll('[data-feature-card]')
-    cards?.forEach((card) => observer.observe(card))
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <section
-      ref={sectionRef}
-      id="features"
-      className="py-24 relative overflow-hidden"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="features" className="py-24 relative overflow-hidden">
+      {/* Background glow */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#22C55E]/5 rounded-full blur-[150px] pointer-events-none"
+        animate={{ opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 8, repeat: Infinity }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20 text-sm text-[#4ADE80] font-medium mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <motion.span
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            className="inline-block px-4 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20 text-sm text-[#4ADE80] font-medium mb-4"
+          >
             المميزات
-          </span>
+          </motion.span>
           <h2 className="font-cairo font-bold text-3xl sm:text-4xl lg:text-5xl mb-4">
             كل اللي <span className="text-[#22C55E]">جيمك محتاجه</span>
           </h2>
@@ -102,29 +106,35 @@ export function Features() {
             نظام واحد فيه كل أدوات إدارة الجيم. من الأعضاء والاشتراكات للتقارير
             والمصروفات.
           </p>
-        </div>
+        </motion.div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, i) => (
-            <div
-              key={i}
-              data-feature-card
-              className="opacity-0 glass-card p-8 rounded-2xl hover:border-[#22C55E]/30 transition-all duration-300 hover:-translate-y-1 group"
-              style={{ animationDelay: `${i * 100}ms` }}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-50px' }}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {features.map((feature) => (
+            <motion.div
+              key={feature.title}
+              variants={cardVariants}
+              whileHover={{ y: -8, transition: { duration: 0.2 } }}
+              className="glass-card p-8 rounded-2xl hover:border-[#22C55E]/30 transition-colors group"
             >
-              <div
-                className={`w-14 h-14 rounded-xl ${feature.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className={`w-14 h-14 rounded-xl ${feature.bg} flex items-center justify-center mb-6`}
               >
                 <feature.icon className={`w-7 h-7 ${feature.color}`} />
-              </div>
-              <h3 className="font-cairo font-bold text-xl mb-3">
-                {feature.title}
-              </h3>
+              </motion.div>
+              <h3 className="font-cairo font-bold text-xl mb-3">{feature.title}</h3>
               <p className="text-[#94A3B8] leading-relaxed">{feature.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

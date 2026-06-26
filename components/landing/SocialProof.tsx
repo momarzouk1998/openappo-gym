@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { motion } from 'motion/react'
 import { Star, Quote } from 'lucide-react'
 
 const testimonials = [
@@ -27,65 +27,77 @@ const testimonials = [
   },
 ]
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.15 } },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 90, damping: 14 },
+  },
+}
+
 export function SocialProof() {
-  const sectionRef = useRef<HTMLElement>(null)
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
-    if (prefersReducedMotion) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-up')
-            entry.target.classList.remove('opacity-0')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.15 }
-    )
-
-    const cards = sectionRef.current?.querySelectorAll('[data-testimonial-card]')
-    cards?.forEach((card) => observer.observe(card))
-
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <section ref={sectionRef} className="py-24 relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-[#22C55E]/5 rounded-full blur-[100px] pointer-events-none" />
+      <motion.div
+        className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-[#22C55E]/5 rounded-full blur-[100px] pointer-events-none"
+        animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 8, repeat: Infinity }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <span className="inline-block px-4 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20 text-sm text-[#4ADE80] font-medium mb-4">
             آراء عملائنا
           </span>
           <h2 className="font-cairo font-bold text-3xl sm:text-4xl lg:text-5xl mb-4">
             صاحب جيم <span className="text-[#22C55E]">بيحب OpenGym</span>
           </h2>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-50px' }}
+          className="grid md:grid-cols-3 gap-6"
+        >
           {testimonials.map((t, i) => (
-            <div
+            <motion.div
               key={i}
-              data-testimonial-card
-              className="opacity-0 glass-card p-8 rounded-2xl relative hover:border-[#22C55E]/30 transition-all"
-              style={{ animationDelay: `${i * 150}ms` }}
+              variants={cardVariants}
+              whileHover={{ y: -6 }}
+              className="glass-card p-8 rounded-2xl relative hover:border-[#22C55E]/30 transition-colors"
             >
               <Quote className="absolute top-6 left-6 w-10 h-10 text-[#22C55E]/10" />
 
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: t.rating }).map((_, idx) => (
-                  <Star
+                  <motion.div
                     key={idx}
-                    className="w-4 h-4 fill-[#22C55E] text-[#22C55E]"
-                  />
+                    initial={{ scale: 0, rotate: -180 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      delay: i * 0.1 + idx * 0.08,
+                      type: 'spring',
+                      stiffness: 200,
+                    }}
+                  >
+                    <Star className="w-4 h-4 fill-[#22C55E] text-[#22C55E]" />
+                  </motion.div>
                 ))}
               </div>
 
@@ -104,9 +116,9 @@ export function SocialProof() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   )

@@ -1,48 +1,43 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
+import { motion } from 'motion/react'
 import { Check, Star } from 'lucide-react'
 import { PLANS } from '@/lib/billing'
 import { ADDONS } from '@/lib/addons'
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.15 } },
+}
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring' as const, stiffness: 90, damping: 14 },
+  },
+}
+
 export function Pricing() {
-  const sectionRef = useRef<HTMLElement>(null)
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly')
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
-    if (prefersReducedMotion) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-fade-in-up')
-            entry.target.classList.remove('opacity-0')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.2 }
-    )
-
-    const cards = sectionRef.current?.querySelectorAll('[data-pricing-card]')
-    cards?.forEach((card) => observer.observe(card))
-
-    return () => observer.disconnect()
-  }, [])
 
   const planList = Object.values(PLANS)
   const addonList = Object.values(ADDONS)
 
   return (
-    <section id="pricing" ref={sectionRef} className="py-24 relative">
+    <section id="pricing" className="py-24 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
           <span className="inline-block px-4 py-1.5 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20 text-sm text-[#4ADE80] font-medium mb-4">
             الأسعار
           </span>
@@ -52,38 +47,87 @@ export function Pricing() {
           <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto">
             اختر الباقة المناسبة لجيمك. تبدأ تجربة مجانية 14 يوم بدون كريدت كارد.
           </p>
-        </div>
+        </motion.div>
+
+        {/* Billing toggle */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className="flex justify-center mb-12"
+        >
+          <div className="inline-flex p-1 bg-[#111118] border border-[#1F1F2E] rounded-xl">
+            {(['monthly', 'annual'] as const).map((option) => (
+              <button
+                key={option}
+                onClick={() => setBilling(option)}
+                className="relative px-6 py-2 rounded-lg text-sm font-medium"
+              >
+                {billing === option && (
+                  <motion.div
+                    layoutId="billingPill"
+                    className="absolute inset-0 bg-[#22C55E] rounded-lg"
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  />
+                )}
+                <span className={`relative z-10 ${billing === option ? 'text-white' : 'text-[#94A3B8]'}`}>
+                  {option === 'monthly' ? 'شهري' : 'سنوي'}
+                </span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Plans */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
-          {planList.map((plan, i) => {
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: '-50px' }}
+          className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16"
+        >
+          {planList.map((plan) => {
             const price =
               billing === 'annual' ? Math.floor(plan.price * 12 * 0.8) : plan.price
+            const isPopular = 'popular' in plan && plan.popular
             return (
-              <div
+              <motion.div
                 key={plan.key}
-                data-pricing-card
-                className={`opacity-0 relative rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 ${
-                  'popular' in plan && plan.popular
+                variants={cardVariants}
+                whileHover={{ y: -8 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className={`relative rounded-2xl p-8 ${
+                  isPopular
                     ? 'bg-gradient-to-b from-[#22C55E]/10 to-[#111118] border-2 border-[#22C55E]/40 glow-green-sm'
                     : 'glass-card hover:border-[#22C55E]/30'
                 }`}
-                style={{ animationDelay: `${i * 150}ms` }}
               >
-                {'popular' in plan && plan.popular && (
-                  <div className="absolute -top-4 right-1/2 translate-x-1/2 px-4 py-1.5 bg-[#22C55E] rounded-full text-sm font-bold text-white flex items-center gap-1">
+                {isPopular && (
+                  <motion.div
+                    initial={{ scale: 0, rotate: -10 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ type: 'spring', stiffness: 200, delay: 0.3 }}
+                    className="absolute -top-4 right-1/2 translate-x-1/2 px-4 py-1.5 bg-[#22C55E] rounded-full text-sm font-bold text-white flex items-center gap-1"
+                  >
                     <Star className="w-4 h-4 fill-white" />
                     الأكثر شيوعاً
-                  </div>
+                  </motion.div>
                 )}
 
                 <h3 className="font-cairo font-bold text-2xl mb-2">
                   باقة {plan.name}
                 </h3>
                 <div className="flex items-end gap-2 mb-1">
-                  <span className="text-5xl font-bold font-cairo text-white">
+                  <motion.span
+                    key={price}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-5xl font-bold font-cairo text-white"
+                  >
                     {price.toLocaleString('ar-EG')}
-                  </span>
+                  </motion.span>
                   <span className="text-[#64748B] mb-2">
                     ج / {billing === 'annual' ? 'سنة' : 'شهر'}
                   </span>
@@ -96,52 +140,65 @@ export function Pricing() {
 
                 <ul className="space-y-3 mt-6">
                   {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-3">
+                    <motion.li
+                      key={idx}
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="flex items-center gap-3"
+                    >
                       <div className="w-5 h-5 rounded-full bg-[#22C55E]/20 flex items-center justify-center flex-shrink-0">
                         <Check className="w-3 h-3 text-[#22C55E]" />
                       </div>
                       <span className="text-[#CBD5E1]">{feature}</span>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
 
                 <Link
                   href="/register"
                   className={`block text-center mt-8 py-3.5 rounded-xl font-semibold transition-all ${
-                    'popular' in plan && plan.popular
+                    isPopular
                       ? 'bg-[#22C55E] text-white hover:bg-[#16A34A] hover:shadow-lg hover:shadow-[#22C55E]/30'
                       : 'border border-[#1F1F2E] text-white hover:bg-[#111118]'
                   }`}
                 >
                   ابدأ تجربة مجانية 14 يوم
                 </Link>
-              </div>
+              </motion.div>
             )
           })}
-        </div>
+        </motion.div>
 
         {/* Addons */}
-        <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto"
+        >
           <div className="text-center mb-8">
-            <h3 className="font-cairo font-bold text-2xl mb-2">
-              إضافات اختيارية
-            </h3>
+            <h3 className="font-cairo font-bold text-2xl mb-2">إضافات اختيارية</h3>
             <p className="text-[#94A3B8]">فعّل بس اللي تحتاجه — كل إضافة منفصلة</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            {addonList.map((addon) => (
-              <div
+            {addonList.map((addon, i) => (
+              <motion.div
                 key={addon.key}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ y: -3 }}
                 className="glass-card px-4 py-3 rounded-xl flex items-center gap-3 hover:border-[#22C55E]/30 transition-colors"
               >
                 <span className="text-sm font-medium">{addon.name}</span>
-                <span className="text-sm text-[#22C55E] font-bold">
-                  +{addon.price} ج
-                </span>
-              </div>
+                <span className="text-sm text-[#22C55E] font-bold">+{addon.price} ج</span>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
