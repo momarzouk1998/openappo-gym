@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/Sidebar'
 import { Header } from '@/components/dashboard/Header'
+import { GymProvider } from '@/components/GymProvider'
 
 const pageTitles: Record<string, string> = {
   '/dashboard': 'الرئيسية',
@@ -20,11 +21,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/settings': 'الإعدادات',
 }
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+function DashboardShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
 
@@ -44,8 +41,6 @@ export default function DashboardLayout({
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          gymName="جيمي"
-          userName="مدير"
         />
         <div className="flex-1 min-w-0">
           <Header
@@ -56,5 +51,17 @@ export default function DashboardLayout({
         </div>
       </div>
     </div>
+  )
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <GymProvider>
+      <DashboardShell>{children}</DashboardShell>
+    </GymProvider>
   )
 }

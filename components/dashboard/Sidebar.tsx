@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useGymStore } from '@/store/gym-store'
+import { GymSwitcher } from '@/components/dashboard/GymSwitcher'
 import {
   Home,
   Users,
@@ -20,11 +22,6 @@ import {
 import { signOut } from 'next-auth/react'
 
 interface SidebarProps {
-  gymName?: string
-  gymLogo?: string
-  userName?: string
-  userRole?: string
-  addons?: string[]
   isOpen: boolean
   onClose: () => void
 }
@@ -69,15 +66,18 @@ const addonItems: { key: string; href: string; label: string; icon: any }[] = [
   },
 ]
 
-export function Sidebar({
-  gymName = 'جيمي',
-  userName = 'مستخدم',
-  userRole = 'مدير',
-  addons = [],
-  isOpen,
-  onClose,
-}: SidebarProps) {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname()
+  const { user, gym } = useGymStore()
+
+  const gymName = gym?.name || 'جيمي'
+  const userName = user?.fullName || user?.name || 'مستخدم'
+  const userRole = user?.role || 'مدير'
+  const userInitial = userName.charAt(0)
+
+  // Get gym addons from the gym object (not in store yet, but we can add later)
+  // For now, show no addons
+  const addons: string[] = []
   const activeAddons = addonItems.filter((item) => addons.includes(item.key))
 
   const isActive = (href: string) =>
@@ -119,16 +119,8 @@ export function Sidebar({
             </button>
           </div>
 
-          {/* Gym info */}
-          <div className="flex items-center gap-3 p-3 bg-[#111118] rounded-xl">
-            <div className="w-10 h-10 rounded-lg bg-[#22C55E]/20 flex items-center justify-center font-bold font-cairo text-[#22C55E]">
-              {gymName.charAt(0)}
-            </div>
-            <div className="min-w-0">
-              <div className="font-medium truncate">{gymName}</div>
-              <div className="text-xs text-[#64748B]">{userName}</div>
-            </div>
-          </div>
+          {/* Gym switcher */}
+          <GymSwitcher />
         </div>
 
         {/* Nav */}
@@ -204,8 +196,17 @@ export function Sidebar({
           </Link>
         </nav>
 
-        {/* Logout */}
+        {/* User info + Logout */}
         <div className="p-4 border-t border-[#1F1F2E]">
+          <div className="flex items-center gap-3 px-4 py-3 mb-2">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center text-white font-bold text-sm font-cairo">
+              {userInitial}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-medium text-sm truncate">{userName}</div>
+              <div className="text-xs text-[#64748B]">{userRole === 'gym_owner' ? 'مالك' : userRole}</div>
+            </div>
+          </div>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all"

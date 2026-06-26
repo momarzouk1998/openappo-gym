@@ -1,42 +1,64 @@
+'use client'
+
 import Link from 'next/link'
-import { Users, CreditCard, Wallet, AlertCircle, Plus, TrendingUp } from 'lucide-react'
+import { useGymStore } from '@/store/gym-store'
+import { useApi } from '@/hooks/useApi'
+import { formatCurrency } from '@/lib/utils'
+import {
+  Users,
+  CreditCard,
+  Wallet,
+  AlertCircle,
+  Plus,
+  TrendingUp,
+  Loader2,
+} from 'lucide-react'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
+
+interface DashboardStats {
+  totalMembers: number
+  activeSubs: number
+  expiringSoon: number
+  monthlyRevenue: number
+}
+
+interface ExpiringSub {
+  id: string
+  member: { id: string; fullName: string; phone: string }
+  plan: { name: string }
+  endDate: string
+}
+
+interface DashboardData {
+  stats: DashboardStats
+  revenueChart: { month: string; revenue: number; label: string }[]
+  expiringSoon: ExpiringSub[]
+}
+
+const statusColors: Record<string, string> = {
+  active: 'bg-[#22C55E]',
+  trial: 'bg-[#F59E0B]',
+  suspended: 'bg-[#EF4444]',
+  cancelled: 'bg-[#64748B]',
+}
 
 export default function DashboardHome() {
-  // Placeholder stats — will be replaced with real data after auth integration
-  const stats = [
-    {
-      label: 'إجمالي الأعضاء',
-      value: '0',
-      change: '+0 هذا الشهر',
-      icon: Users,
-      color: 'text-[#22C55E]',
-      bg: 'bg-[#22C55E]/10',
-    },
-    {
-      label: 'الاشتراكات الفعّالة',
-      value: '0',
-      change: 'منتهية: 0',
-      icon: CreditCard,
-      color: 'text-[#4ADE80]',
-      bg: 'bg-[#4ADE80]/10',
-    },
-    {
-      label: 'إيرادات الشهر',
-      value: '0 ج',
-      change: '+0% عن الشهر الماضي',
-      icon: Wallet,
-      color: 'text-[#22C55E]',
-      bg: 'bg-[#22C55E]/10',
-    },
-    {
-      label: 'تنتهي قريباً',
-      value: '0',
-      change: 'خلال 7 أيام',
-      icon: AlertCircle,
-      color: 'text-[#F59E0B]',
-      bg: 'bg-[#F59E0B]/10',
-    },
-  ]
+  const { gym, user } = useGymStore()
+  const { data, loading } = useApi<DashboardData>('/dashboard')
+
+  const stats = data?.stats
+  const revenueChart = data?.revenueChart || []
+  const expiringSoon = data?.expiringSoon || []
+
+  const gymName = gym?.name || 'جيمك'
+  const userName = user?.fullName || ''
 
   return (
     <div className="space-y-6">
@@ -44,9 +66,9 @@ export default function DashboardHome() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="font-cairo font-bold text-2xl mb-1">
-            أهلاً بك في لوحة التحكم 👋
+            أهلاً {userName ? `${userName}` : ''} 👋
           </h2>
-          <p className="text-[#94A3B8]">إليك ملخص جيمك اليوم</p>
+          <p className="text-[#94A3B8]">إليك ملخص {gymName} اليوم</p>
         </div>
         <Link
           href="/dashboard/members/new"
@@ -57,56 +79,152 @@ export default function DashboardHome() {
         </Link>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, i) => (
-          <div
-            key={i}
-            className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div
-                className={`w-11 h-11 rounded-xl ${stat.bg} flex items-center justify-center`}
-              >
-                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+      {loading && !data ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-[#22C55E]" />
+        </div>
+      ) : (
+        <>
+          {/* Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-[#22C55E]" />
+                </div>
+                <TrendingUp className="w-4 h-4 text-[#22C55E]" />
               </div>
-              <TrendingUp className="w-4 h-4 text-[#22C55E]" />
+              <div className="text-3xl font-bold font-cairo mb-1">
+                {stats?.totalMembers ?? 0}
+              </div>
+              <div className="text-sm text-[#94A3B8]">إجمالي الأعضاء</div>
             </div>
-            <div className="text-3xl font-bold font-cairo mb-1">
-              {stat.value}
-            </div>
-            <div className="text-sm text-[#94A3B8]">{stat.label}</div>
-            <div className="text-xs text-[#64748B] mt-2">{stat.change}</div>
-          </div>
-        ))}
-      </div>
 
-      {/* Empty state for chart + list */}
-      <div className="grid lg:grid-cols-3 gap-6">
-        {/* Chart placeholder */}
-        <div className="lg:col-span-2 glass-card p-6 rounded-2xl">
-          <h3 className="font-cairo font-bold text-lg mb-1">إيرادات آخر 6 شهور</h3>
-          <p className="text-sm text-[#64748B] mb-6">إجمالي المدفوعات الشهرية</p>
-          <div className="h-64 flex items-center justify-center text-[#64748B]">
-            <div className="text-center">
-              <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p>الرسم البياني سيظهر هنا بعد إضافة المدفوعات</p>
+            <div className="glass-card p-5 rounded-2xl hover:border-[#4ADE80]/30 transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-xl bg-[#4ADE80]/10 flex items-center justify-center">
+                  <CreditCard className="w-5 h-5 text-[#4ADE80]" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold font-cairo mb-1">
+                {stats?.activeSubs ?? 0}
+              </div>
+              <div className="text-sm text-[#94A3B8]">الاشتراكات الفعّالة</div>
             </div>
-          </div>
-        </div>
 
-        {/* Expiring list */}
-        <div className="glass-card p-6 rounded-2xl">
-          <h3 className="font-cairo font-bold text-lg mb-1">تنتهي قريباً</h3>
-          <p className="text-sm text-[#64748B] mb-6">اشتراكات خلال 7 أيام</p>
-          <div className="space-y-3">
-            <div className="text-center py-8 text-[#64748B]">
-              <AlertCircle className="w-10 h-10 mx-auto mb-2 opacity-30" />
-              <p className="text-sm">مفيش اشتراكات تنتهي قريباً</p>
+            <div className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-[#22C55E]" />
+                </div>
+                <TrendingUp className="w-4 h-4 text-[#22C55E]" />
+              </div>
+              <div className="text-3xl font-bold font-cairo mb-1">
+                {formatCurrency(stats?.monthlyRevenue ?? 0)}
+              </div>
+              <div className="text-sm text-[#94A3B8]">إيرادات الشهر</div>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl hover:border-[#F59E0B]/30 transition-colors">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-11 h-11 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
+                  <AlertCircle className="w-5 h-5 text-[#F59E0B]" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold font-cairo mb-1">
+                {stats?.expiringSoon ?? 0}
+              </div>
+              <div className="text-sm text-[#94A3B8]">تنتهي قريباً (7 أيام)</div>
             </div>
           </div>
-        </div>
-      </div>
+
+          {/* Chart + Expiring */}
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Revenue Chart */}
+            <div className="lg:col-span-2 glass-card p-6 rounded-2xl">
+              <h3 className="font-cairo font-bold text-lg mb-1">إيرادات آخر 6 شهور</h3>
+              <p className="text-sm text-[#64748B] mb-6">إجمالي المدفوعات الشهرية</p>
+
+              {revenueChart.length > 0 ? (
+                <div className="h-64" dir="ltr">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={revenueChart}>
+                      <XAxis
+                        dataKey="label"
+                        tick={{ fill: '#64748B', fontSize: 12 }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fill: '#64748B', fontSize: 12 }}
+                        axisLine={false}
+                        tickLine={false}
+                        width={60}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#111118',
+                          border: '1px solid #1F1F2E',
+                          borderRadius: '12px',
+                          color: '#fff',
+                          fontFamily: 'Cairo',
+                        }}
+                        formatter={(value) => [formatCurrency(Number(value)), 'الإيرادات']}
+                        labelFormatter={(label) => String(label)}
+                      />
+                      <Bar
+                        dataKey="revenue"
+                        fill="#22C55E"
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={50}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="h-64 flex items-center justify-center text-[#64748B]">
+                  <div className="text-center">
+                    <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p>الرسم البياني سيظهر هنا بعد إضافة المدفوعات</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Expiring Subscriptions */}
+            <div className="glass-card p-6 rounded-2xl">
+              <h3 className="font-cairo font-bold text-lg mb-1">تنتهي قريباً</h3>
+              <p className="text-sm text-[#64748B] mb-6">اشتراكات خلال 7 أيام</p>
+
+              {expiringSoon.length > 0 ? (
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {expiringSoon.map((sub) => (
+                    <div
+                      key={sub.id}
+                      className="flex items-center justify-between p-3 bg-[#111118] rounded-xl"
+                    >
+                      <div>
+                        <div className="font-medium text-sm">{sub.member.fullName}</div>
+                        <div className="text-xs text-[#64748B]">{sub.plan.name}</div>
+                      </div>
+                      <div className="text-left">
+                        <div className="text-xs text-[#F59E0B] font-medium">
+                          {new Date(sub.endDate).toLocaleDateString('ar-EG')}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-[#64748B]">
+                  <AlertCircle className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm">مفيش اشتراكات تنتهي قريباً</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

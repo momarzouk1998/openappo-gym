@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Cairo, IBM_Plex_Sans_Arabic, Inter } from 'next/font/google'
 import './globals.css'
+import { SessionProvider } from '@/components/SessionProvider'
 
 const cairo = Cairo({
   variable: '--font-cairo',
@@ -90,7 +91,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#0A0A0F] text-[#F8FAFC] font-ibm">
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   )
