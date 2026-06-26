@@ -2,35 +2,20 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { prisma } from './prisma'
 import bcrypt from 'bcryptjs'
-import type { NextAuthConfig } from 'next-auth'
+import { authConfig } from '../auth.config'
 
-export const authConfig: NextAuthConfig = {
-  trustHost: true,
-  pages: {
-    signIn: '/login',
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        const profile = await prisma.profile.findUnique({
-          where: { id: user.id },
-        })
-        if (profile) {
-          token.role = profile.role
-          token.gymId = profile.gymId
-        }
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.sub as string
-        session.user.role = token.role as string
-        session.user.gymId = token.gymId as string | null
-      }
-      return session
-    },
-  },
+/**
+ * Full NextAuth config (Node runtime).
+ *
+ * Extends the edge-safe authConfig (from auth.config.ts) by adding:
+ *  - the Credentials provider (requires bcrypt + Prisma — Node-only)
+ *  - the jwt callback that enriches the token with role/gymId from the DB
+ *
+ * The cookie names + session callback are inherited unchanged from authConfig so that
+ * the middleware (edge) and the API routes (node) agree on how to read the session.
+ */
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
       name: 'credentials',
@@ -64,6 +49,28 @@ export const authConfig: NextAuthConfig = {
       },
     }),
   ],
-}
-
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
+  callbacks: {
+    // Enrich the JWT with role + gymId at sign-in (runs once, in Node runtime).
+    async jwt({ token, user }) {
+      if (user) {
+        const profile = await prisma.profile.findUnique({
+          where: { id: user.id },
+        })
+        if (profile) {
+          token.role = profile.role
+          token.gymId = profile.gymId
+        }
+      }
+      return token
+    },
+    // Inherited pass-through session callback (same as authConfig — keep them in sync).
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.sub as string
+        session.user.role = token.role as string
+        session.user.gymId = token.gymId as string | null
+      }
+      return session
+    },
+  },
+})
