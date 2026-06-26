@@ -46,18 +46,6 @@ export function usePushNotifications() {
         .catch(() => {
           /* ignore */
         })
-
-      // Listen for permission changes (e.g. from browser settings)
-      const handler = () => {
-        setState((s) => ({
-          ...s,
-          permission: Notification.permission,
-        }))
-      }
-      Notification.addEventListener?.('permissionchange', handler)
-      return () => {
-        Notification.removeEventListener?.('permissionchange', handler)
-      }
     }
   }, [])
 
