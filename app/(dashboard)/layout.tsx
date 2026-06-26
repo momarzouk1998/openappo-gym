@@ -18,6 +18,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/classes': 'الكلاسات',
   '/dashboard/branches': 'الفروع',
   '/dashboard/reports': 'التقارير',
+  '/dashboard/profile': 'الصفحة الشخصية',
   '/dashboard/settings': 'الإعدادات',
 }
 

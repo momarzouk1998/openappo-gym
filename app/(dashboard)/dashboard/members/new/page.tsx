@@ -27,9 +27,6 @@ export default function NewMemberPage() {
     fullName: '',
     phone: '',
     gender: '',
-    birthDate: '',
-    nationalId: '',
-    address: '',
     notes: '',
     // subscription
     planId: '',
@@ -70,9 +67,6 @@ export default function NewMemberPage() {
           fullName: form.fullName,
           phone: form.phone || undefined,
           gender: form.gender || undefined,
-          birthDate: form.birthDate || undefined,
-          nationalId: form.nationalId || undefined,
-          address: form.address || undefined,
           notes: form.notes || undefined,
         }),
       })
@@ -184,43 +178,6 @@ export default function NewMemberPage() {
                 <option value="male">ذكر</option>
                 <option value="female">أنثى</option>
               </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
-                تاريخ الميلاد
-              </label>
-              <input
-                type="date"
-                dir="ltr"
-                value={form.birthDate}
-                onChange={(e) => setForm({ ...form, birthDate: e.target.value })}
-                className={`${inputClass} text-left`}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
-                الرقم القومي
-              </label>
-              <input
-                type="text"
-                dir="ltr"
-                value={form.nationalId}
-                onChange={(e) => setForm({ ...form, nationalId: e.target.value })}
-                className={`${inputClass} text-left`}
-                placeholder="اختياري"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
-                العنوان
-              </label>
-              <input
-                type="text"
-                value={form.address}
-                onChange={(e) => setForm({ ...form, address: e.target.value })}
-                className={inputClass}
-                placeholder="اختياري"
-              />
             </div>
           </div>
         </div>

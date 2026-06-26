@@ -42,7 +42,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'العضو غير موجود' }, { status: 404 })
   }
 
-  const { fullName, phone, gender, birthDate, nationalId, address, notes, isActive } = body
+  const { fullName, phone, gender, notes, isActive } = body
 
   const member = await prisma.member.update({
     where: { id },
@@ -50,9 +50,6 @@ export async function PATCH(
       ...(fullName !== undefined && { fullName }),
       ...(phone !== undefined && { phone }),
       ...(gender !== undefined && { gender }),
-      ...(birthDate !== undefined && { birthDate: birthDate ? new Date(birthDate) : null }),
-      ...(nationalId !== undefined && { nationalId }),
-      ...(address !== undefined && { address }),
       ...(notes !== undefined && { notes }),
       ...(isActive !== undefined && { isActive }),
     },

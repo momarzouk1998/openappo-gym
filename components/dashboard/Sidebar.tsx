@@ -18,6 +18,7 @@ import {
   Settings,
   LogOut,
   X,
+  UserCircle,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -179,6 +180,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           >
             <BarChart3 className="w-5 h-5" />
             <span className="text-sm font-medium">التقارير</span>
+          </Link>
+
+          {/* Profile */}
+          <Link
+            href="/dashboard/profile"
+            onClick={onClose}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              isActive('/dashboard/profile')
+                ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
+                : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+            }`}
+          >
+            <UserCircle className="w-5 h-5" />
+            <span className="text-sm font-medium">الصفحة الشخصية</span>
           </Link>
 
           {/* Settings */}

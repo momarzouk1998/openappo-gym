@@ -26,7 +26,7 @@ export async function GET() {
   }
 
   // Get user profile
-  let profile = null
+  let profile: { fullName: string | null; phone: string | null; role: string } | null = null
   if (activeGym) {
     profile = await prisma.profile.findUnique({
       where: { id: userId, gymId: activeGym.id },
@@ -46,6 +46,9 @@ export async function GET() {
       email: session.user.email,
       role,
       fullName: profile?.fullName || session.user.name || '',
+    },
+    profile: {
+      phone: profile?.phone || '',
     },
     gym: activeGym
       ? {

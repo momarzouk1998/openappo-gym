@@ -38,7 +38,7 @@ export async function POST(
   const { gym, userId } = ctxResult.ctx
 
   const body = await request.json()
-  const { fullName, phone, gender, birthDate, nationalId, address, notes } = body
+  const { fullName, phone, gender, notes } = body
 
   if (!fullName?.trim()) {
     return NextResponse.json({ error: 'الاسم مطلوب' }, { status: 400 })
@@ -53,9 +53,6 @@ export async function POST(
       fullName: fullName.trim(),
       phone: phone || null,
       gender: (gender as GenderType) || null,
-      birthDate: birthDate ? new Date(birthDate) : null,
-      nationalId: nationalId || null,
-      address: address || null,
       notes: notes || null,
     },
   })
