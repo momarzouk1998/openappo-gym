@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Download, X, RefreshCw, WifiOff, Bell } from 'lucide-react'
+import { Download, X, RefreshCw, WifiOff, Bell, BellOff, BellRing } from 'lucide-react'
+import { usePushNotifications } from '@/hooks/usePushNotifications'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -16,6 +17,9 @@ export function PWARegister() {
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [offline, setOffline] = useState(false)
   const [swReg, setSwReg] = useState<ServiceWorkerRegistration | null>(null)
+  const [showNotifBanner, setShowNotifBanner] = useState(false)
+
+  const push = usePushNotifications()
 
   useEffect(() => {
     // Don't register SW in dev (it caches everything and breaks HMR)
@@ -73,6 +77,18 @@ export function PWARegister() {
     window.addEventListener('offline', handleOffline)
     setOffline(!navigator.onLine)
 
+    // Show notification permission banner once (after SW registration)
+    const notifDismissed = localStorage.getItem('pwa-notif-dismissed')
+    if (!notifDismissed && push.supported && push.permission === 'default') {
+      const timer = setTimeout(() => setShowNotifBanner(true), 5000)
+      return () => {
+        clearTimeout(timer)
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
+        window.removeEventListener('online', handleOnline)
+        window.removeEventListener('offline', handleOffline)
+      }
+    }
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
       window.removeEventListener('online', handleOnline)
@@ -101,6 +117,24 @@ export function PWARegister() {
       swReg.waiting.postMessage({ type: 'SKIP_WAITING' })
     }
     window.location.reload()
+  }
+
+  const handleEnableNotif = async () => {
+    await push.subscribe()
+    setShowNotifBanner(false)
+  }
+
+  const dismissNotifBanner = () => {
+    setShowNotifBanner(false)
+    localStorage.setItem('pwa-notif-dismissed', '1')
+  }
+
+  const handleToggleNotif = async () => {
+    if (push.subscribed) {
+      await push.unsubscribe()
+    } else {
+      await push.subscribe()
+    }
   }
 
   return (
@@ -181,6 +215,74 @@ export function PWARegister() {
                 </button>
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Notification permission banner */}
+      <AnimatePresence>
+        {showNotifBanner && push.supported && push.permission === 'default' && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:left-4 sm:right-4 z-[100] max-w-md mx-auto"
+          >
+            <div className="glass-card glow-green-sm p-5 rounded-2xl flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/20 flex items-center justify-center shrink-0">
+                <BellRing className="w-6 h-6 text-[#F59E0B]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-sm mb-0.5">
+                  فعّل الإشعارات
+                </div>
+                <div className="text-xs text-[#94A3B8]">
+                  هيوصلك تنبيهات الاشتراكات والمدفوعات في الوقت
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={dismissNotifBanner}
+                  className="p-2 text-[#64748B] hover:text-white"
+                  aria-label="إغلاق"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleEnableNotif}
+                  disabled={push.loading}
+                  className="px-4 py-2 bg-[#F59E0B] text-white rounded-lg text-sm font-bold hover:bg-[#D97706] whitespace-nowrap disabled:opacity-50"
+                >
+                  {push.loading ? 'جاري...' : 'تفعيل'}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Notification toggle indicator (small button — shows when subscribed) */}
+      <AnimatePresence>
+        {push.supported && push.subscribed && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            className="fixed bottom-20 right-4 z-[90]"
+          >
+            <button
+              onClick={handleToggleNotif}
+              disabled={push.loading}
+              className="w-10 h-10 rounded-full bg-[#22C55E]/20 border border-[#22C55E]/30 flex items-center justify-center hover:bg-[#22C55E]/30 transition-colors disabled:opacity-50"
+              aria-label={push.subscribed ? 'إيقاف الإشعارات' : 'تفعيل الإشعارات'}
+              title={push.subscribed ? 'الإشعارات مفعّلة — اضغط للإيقاف' : 'تفعيل الإشعارات'}
+            >
+              {push.subscribed ? (
+                <Bell className="w-4 h-4 text-[#22C55E]" />
+              ) : (
+                <BellOff className="w-4 h-4 text-[#64748B]" />
+              )}
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
