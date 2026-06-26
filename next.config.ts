@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Keep native/server-only deps external so they bundle correctly in standalone
+  serverExternalPackages: ["web-push", "@node-rs/argon"],
   // Allow image optimization from common domains
   images: {
     remotePatterns: [
