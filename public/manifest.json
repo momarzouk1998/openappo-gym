@@ -1,0 +1,77 @@
+{
+  "name": "OpenGym — إدارة الجيمات",
+  "short_name": "OpenGym",
+  "description": "منصة متكاملة لإدارة الجيمات: اشتراكات، مدفوعات، تقارير، وأعضاء — كل حاجة في مكان واحد.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A0A0F",
+  "theme_color": "#22C55E",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "الأعضاء",
+      "short_name": "أعضاء",
+      "description": "إدارة أعضاء الجيم",
+      "url": "/dashboard/members",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "الاشتراكات",
+      "short_name": "اشتراكات",
+      "description": "إدارة الاشتراكات",
+      "url": "/dashboard/subscriptions",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "المدفوعات",
+      "short_name": "مدفوعات",
+      "description": "تتبع المدفوعات",
+      "url": "/dashboard/payments",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

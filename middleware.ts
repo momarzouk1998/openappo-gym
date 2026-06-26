@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 // Public routes that don't require authentication
-const publicRoutes = ['/', '/login', '/register']
+const publicRoutes = ['/', '/login', '/register', '/offline']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

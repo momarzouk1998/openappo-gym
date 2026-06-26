@@ -1,97 +1,122 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Cairo, IBM_Plex_Sans_Arabic, Inter } from 'next/font/google'
 import './globals.css'
 import { SessionProvider } from '@/components/SessionProvider'
+import { PWARegister } from '@/components/PWARegister'
 
 const cairo = Cairo({
-  variable: '--font-cairo',
   subsets: ['arabic', 'latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-cairo',
   display: 'swap',
 })
 
-const ibmPlex = IBM_Plex_Sans_Arabic({
+const ibm = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-ibm',
-  subsets: ['arabic', 'latin'],
-  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 })
 
 const inter = Inter({
-  variable: '--font-inter',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'OpenGym | نظام إدارة الجيمات في مصر',
+  metadataBase: new URL('https://opengym.openappo.com'),
+  title: {
+    default: 'OpenGym — إدارة الجيمات بذكاء',
+    template: '%s | OpenGym',
+  },
   description:
-    'نظام SaaS متكامل لإدارة الجيمات — اشتراكات، مدفوعات، أعضاء، تقارير، فروع. كل حاجة في مكان واحد.',
+    'منصة متكاملة لإدارة الجيمات: اشتراكات، مدفوعات، تقارير، وأعضاء — كل حاجة في مكان واحد. مصمّمة للجيمات المصرية.',
   keywords: [
-    'إدارة الجيمات',
-    'نظام جم',
-    'اشتراكات الجم',
-    'إدارة الأعضاء',
-    'تقارير الجم',
-    'OpenGym',
+    'إدارة جيم',
+    'نادي رياضي',
+    'اشتراكات',
+    'مدفوعات',
     'gym management',
-    'egypt',
+    'مصر',
   ],
-  authors: [{ name: 'OpenAppo' }],
+  authors: [{ name: 'OpenGym' }],
+  creator: 'OpenGym',
+  manifest: '/manifest.json',
+  applicationName: 'OpenGym',
+  appleWebApp: {
+    capable: true,
+    title: 'OpenGym',
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: { telephone: false },
   openGraph: {
-    title: 'OpenGym | نظام إدارة الجيمات في مصر',
-    description:
-      'إدارة جيمك من شاشة واحدة — اشتراكات، مدفوعات، تقارير، أعضاء',
+    type: 'website',
+    locale: 'ar_EG',
     url: 'https://opengym.openappo.com',
     siteName: 'OpenGym',
-    locale: 'ar_EG',
-    type: 'website',
+    title: 'OpenGym — إدارة الجيمات بذكاء',
+    description: 'منصة متكاملة لإدارة الجيمات في مصر',
+    images: [
+      {
+        url: '/icons/icon-512.png',
+        width: 512,
+        height: 512,
+        alt: 'OpenGym',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'OpenGym | نظام إدارة الجيمات',
-    description: 'إدارة جيمك من شاشة واحدة',
+    title: 'OpenGym — إدارة الجيمات بذكاء',
+    description: 'منصة متكاملة لإدارة الجيمات في مصر',
+    images: ['/icons/icon-512.png'],
   },
-  robots: {
-    index: true,
-    follow: true,
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/icons/apple-180.png', sizes: '180x180' }],
+    shortcut: ['/favicon.png'],
   },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#22C55E',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html
       lang="ar"
       dir="rtl"
-      className={`${cairo.variable} ${ibmPlex.variable} ${inter.variable} antialiased`}
+      className={`${cairo.variable} ${ibm.variable} ${inter.variable}`}
     >
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'SoftwareApplication',
-              name: 'OpenGym',
-              applicationCategory: 'BusinessApplication',
-              description: 'نظام إدارة الجيمات في مصر',
-              operatingSystem: 'Web',
-              offers: {
-                '@type': 'Offer',
-                price: '299',
-                priceCurrency: 'EGP',
-              },
-            }),
-          }}
+        {/* PWA: link manifest explicitly for older browsers */}
+        <link rel="manifest" href="/manifest.json" />
+        {/* iOS meta tags */}
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="OpenGym" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
         />
       </head>
       <body className="min-h-screen bg-[#0A0A0F] text-[#F8FAFC] font-ibm">
         <SessionProvider>{children}</SessionProvider>
+        <PWARegister />
       </body>
     </html>
   )
