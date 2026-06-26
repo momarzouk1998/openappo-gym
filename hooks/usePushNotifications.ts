@@ -36,7 +36,7 @@ export function usePushNotifications() {
       }))
 
       // Check if already subscribed on server
-      fetch('/api/notifications', { credentials: 'include' })
+      fetch('/api/notifications/status', { credentials: 'include' })
         .then((res) => res.json())
         .then((data) => {
           if (data.subscribed) {
