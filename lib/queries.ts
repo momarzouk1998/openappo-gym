@@ -346,6 +346,102 @@ export async function getGymPlans(gymId: string) {
 }
 
 // ========================================
+// REPORTS
+// ========================================
+
+export interface ReportsData {
+  // Monthly revenue for the last N months (mirrors getRevenueChart shape)
+  revenueChart: { month: string; revenue: number; label: string }[]
+  // Revenue grouped by payment method (paid only, last 12 months)
+  revenueByMethod: { method: string; total: number; count: number }[]
+  // Member growth: new members per month for the last N months
+  memberGrowth: { month: string; newMembers: number; label: string }[]
+  // Subscription status breakdown (current snapshot)
+  subscriptionsByStatus: { status: string; count: number }[]
+  // Totals
+  totals: {
+    allTimeRevenue: number
+    totalMembers: number
+    activeSubs: number
+  }
+}
+
+export async function getReports(gymId: string, months = 6): Promise<ReportsData> {
+  const now = new Date()
+  const monthNames = [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+  ]
+
+  // 1. Revenue chart (reuse existing helper for consistency)
+  const revenueChart = await getRevenueChart(gymId, months)
+
+  // 2. Revenue by payment method — last 12 months, paid only
+  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1)
+  const methodGroups = await prisma.payment.groupBy({
+    by: ['method'],
+    where: { gymId, status: 'paid', paidAt: { gte: twelveMonthsAgo } },
+    _sum: { finalAmount: true },
+    _count: true,
+  })
+  const revenueByMethod = methodGroups.map((g) => ({
+    method: g.method,
+    total: g._sum.finalAmount || 0,
+    count: g._count,
+  }))
+
+  // 3. Member growth — new members per month in window
+  const memberGrowth: { month: string; newMembers: number; label: string }[] = []
+  for (let i = months - 1; i >= 0; i--) {
+    const start = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1)
+    const count = await prisma.member.count({
+      where: { gymId, createdAt: { gte: start, lt: end } },
+    })
+    memberGrowth.push({
+      month: `${start.getFullYear()}-${start.getMonth() + 1}`,
+      newMembers: count,
+      label: monthNames[start.getMonth()],
+    })
+  }
+
+  // 4. Subscriptions by status (snapshot)
+  const statusGroups = await prisma.subscription.groupBy({
+    by: ['status'],
+    where: { gymId },
+    _count: true,
+  })
+  const subscriptionsByStatus = statusGroups.map((g) => ({
+    status: g.status,
+    count: g._count,
+  }))
+
+  // 5. Totals
+  const [allTimeAgg, totalMembers, activeSubs] = await Promise.all([
+    prisma.payment.aggregate({
+      where: { gymId, status: 'paid' },
+      _sum: { finalAmount: true },
+    }),
+    prisma.member.count({ where: { gymId, isActive: true } }),
+    prisma.subscription.count({
+      where: { gymId, status: 'active', endDate: { gte: now } },
+    }),
+  ])
+
+  return {
+    revenueChart,
+    revenueByMethod,
+    memberGrowth,
+    subscriptionsByStatus,
+    totals: {
+      allTimeRevenue: allTimeAgg._sum.finalAmount || 0,
+      totalMembers,
+      activeSubs,
+    },
+  }
+}
+
+// ========================================
 // EXPENSES
 // ========================================
 

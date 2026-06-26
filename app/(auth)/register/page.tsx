@@ -104,7 +104,6 @@ export default function RegisterPage() {
 
       if (!res.ok) {
         setError(data.error || 'حدث خطأ، حاول مرة أخرى')
-        setLoading(false)
         return
       }
 
@@ -119,6 +118,10 @@ export default function RegisterPage() {
       router.refresh()
     } catch {
       setError('حدث خطأ في الاتصال، حاول مرة أخرى')
+    } finally {
+      // Always reset loading — button never gets stuck on any path
+      // (matches login page pattern; was previously missing, causing the
+      // spinner to hang permanently on the success path / router back-out)
       setLoading(false)
     }
   }
