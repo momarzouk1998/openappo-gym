@@ -448,3 +448,17 @@ model PushSubscription {
   @@index([userId])
   @@map("push_subscriptions")
 }
+
+// ========================================
+// PLATFORM CONFIG (super-admin managed global pricing)
+// ========================================
+model PlatformConfig {
+  id           Int      @id @default(1)
+  starterPrice Int      @default(299) @map("starter_price")
+  proPrice     Int      @default(599) @map("pro_price")
+  // JSON map of addonKey -> price, e.g. {"expenses":100,"staff":100,...}
+  addonPrices  Json     @default("{\"expenses\":100,\"staff\":100,\"trainers\":100,\"classes\":150,\"branches\":150,\"advanced_reports\":80,\"extra_branch\":150}") @map("addon_prices")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_config")
+}

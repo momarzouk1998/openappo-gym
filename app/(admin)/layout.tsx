@@ -12,12 +12,14 @@ import {
   Menu,
   X,
   Bell,
+  Settings2,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
 const adminNav = [
   { href: '/admin', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/admin/gyms', label: 'الجيمات', icon: Building2 },
+  { href: '/admin/config', label: 'الأسعار', icon: Settings2 },
   { href: '/admin/billing', label: 'الفواتير', icon: Receipt },
 ]
 
