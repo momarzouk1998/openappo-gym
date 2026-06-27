@@ -1,0 +1,368 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { formatCurrency, formatDate } from '@/lib/utils'
+import { ADDONS } from '@/lib/addons'
+import {
+  ArrowRight,
+  Building2,
+  Loader2,
+  CheckCircle2,
+  Save,
+} from 'lucide-react'
+
+interface AdminGym {
+  id: string
+  name: string
+  slug: string
+  ownerName: string
+  ownerEmail: string
+  ownerPhone: string
+  phone: string | null
+  city: string | null
+  address: string | null
+  status: string
+  basePlanPrice: number
+  addons: string[]
+  billingCycle: string
+  nextBillingDate: string | null
+  lastPaidAt: string | null
+  createdAt: string
+}
+
+const PLANS = [
+  { key: 'starter', name: 'Starter', price: 299 },
+  { key: 'pro', name: 'Pro', price: 599 },
+] as const
+
+const STATUSES = [
+  { value: 'active', label: 'فعّال' },
+  { value: 'trial', label: 'تجريبي' },
+  { value: 'suspended', label: 'موقوف' },
+  { value: 'cancelled', label: 'ملغي' },
+]
+
+const CYCLES = [
+  { value: 'monthly', label: 'شهري' },
+  { value: 'quarterly', label: 'ربع سنوي' },
+  { value: 'annual', label: 'سنوي' },
+]
+
+export default function AdminGymEditPage() {
+  const params = useParams<{ id: string }>()
+  const router = useRouter()
+  const gymId = params.id
+
+  const [gym, setGym] = useState<AdminGym | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Editable fields
+  const [basePlanPrice, setBasePlanPrice] = useState<number>(299)
+  const [addons, setAddons] = useState<string[]>([])
+  const [status, setStatus] = useState('trial')
+  const [billingCycle, setBillingCycle] = useState('monthly')
+  const [nextBillingDate, setNextBillingDate] = useState('')
+
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (!gymId) return
+    fetch(`/api/admin/gyms/${gymId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.gym) {
+          setGym(data.gym)
+          setBasePlanPrice(data.gym.basePlanPrice || 299)
+          setAddons(data.gym.addons || [])
+          setStatus(data.gym.status || 'trial')
+          setBillingCycle(data.gym.billingCycle || 'monthly')
+          setNextBillingDate(
+            data.gym.nextBillingDate
+              ? data.gym.nextBillingDate.split('T')[0]
+              : ''
+          )
+        }
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [gymId])
+
+  const toggleAddon = (key: string) => {
+    setAddons((prev) =>
+      prev.includes(key) ? prev.filter((a) => a !== key) : [...prev, key]
+    )
+  }
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSaving(true)
+    setError('')
+    setSaved(false)
+    try {
+      const res = await fetch(`/api/admin/gyms/${gymId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          basePlanPrice,
+          addons,
+          status,
+          billingCycle,
+          nextBillingDate: nextBillingDate || null,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'فشل الحفظ')
+      setGym((prev) =>
+        prev
+          ? { ...prev, basePlanPrice, addons, status, billingCycle, nextBillingDate }
+          : prev
+      )
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'حدث خطأ')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-[#22C55E]" />
+      </div>
+    )
+  }
+
+  if (!gym) {
+    return (
+      <div className="text-center py-20 text-[#94A3B8]">
+        <p>الجيم غير موجود</p>
+      </div>
+    )
+  }
+
+  const inputClass =
+    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+
+  const addonsTotal = addons.reduce(
+    (sum, key) => sum + (ADDONS[key as keyof typeof ADDONS]?.price ?? 0),
+    0
+  )
+
+  return (
+    <div className="max-w-3xl mx-auto space-y-6">
+      {/* Back */}
+      <button
+        onClick={() => router.push('/admin/gyms')}
+        className="flex items-center gap-2 text-sm text-[#94A3B8] hover:text-white transition-colors"
+      >
+        <ArrowRight className="w-4 h-4" />
+        العودة للجيمات
+      </button>
+
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
+          <Building2 className="w-6 h-6 text-[#22C55E]" />
+        </div>
+        <div>
+          <h2 className="font-cairo font-bold text-2xl">{gym.name}</h2>
+          <p className="text-sm text-[#94A3B8]">
+            {gym.ownerName} ·{' '}
+            <span dir="ltr">{gym.ownerEmail}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Info grid (read-only) */}
+      <div className="glass-card p-6 rounded-2xl">
+        <h3 className="font-cairo font-bold text-lg mb-4">معلومات الجيم</h3>
+        <div className="grid sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="text-[#94A3B8] block mb-1">تليفون الجيم</span>
+            <span dir="ltr">{gym.phone || '—'}</span>
+          </div>
+          <div>
+            <span className="text-[#94A3B8] block mb-1">المدينة</span>
+            <span>{gym.city || '—'}</span>
+          </div>
+          <div>
+            <span className="text-[#94A3B8] block mb-1">العنوان</span>
+            <span>{gym.address || '—'}</span>
+          </div>
+          <div>
+            <span className="text-[#94A3B8] block mb-1">تاريخ التسجيل</span>
+            <span>{formatDate(gym.createdAt)}</span>
+          </div>
+          {gym.lastPaidAt && (
+            <div>
+              <span className="text-[#94A3B8] block mb-1">آخر دفع</span>
+              <span>{formatDate(gym.lastPaidAt)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Editable form */}
+      <form onSubmit={handleSave} className="glass-card p-6 rounded-2xl space-y-5">
+        <h3 className="font-cairo font-bold text-lg">التحكم في الاشتراك</h3>
+
+        {error && (
+          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
+        {saved && (
+          <div className="p-3 rounded-xl bg-[#22C55E]/10 border border-[#22C55E]/20 text-[#22C55E] text-sm flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            تم حفظ التغييرات بنجاح
+          </div>
+        )}
+
+        {/* Plan picker */}
+        <div>
+          <label className="block text-sm font-medium mb-3 text-[#CBD5E1]">
+            الباقة
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            {PLANS.map((plan) => {
+              const active = basePlanPrice === plan.price
+              return (
+                <button
+                  type="button"
+                  key={plan.key}
+                  onClick={() => setBasePlanPrice(plan.price)}
+                  className={`p-4 rounded-xl border-2 text-right transition-all ${
+                    active
+                      ? 'border-[#22C55E] bg-[#22C55E]/5'
+                      : 'border-[#1F1F2E] hover:border-[#22C55E]/30'
+                  }`}
+                >
+                  <div className="font-cairo font-bold mb-1">{plan.name}</div>
+                  <div className="text-xl font-bold text-[#22C55E]">
+                    {plan.price}
+                    <span className="text-xs text-[#64748B] font-normal"> ج/شهر</span>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Status + cycle + next billing */}
+        <div className="grid sm:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              الحالة
+            </label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className={inputClass}
+            >
+              {STATUSES.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              دورة الفاتورة
+            </label>
+            <select
+              value={billingCycle}
+              onChange={(e) => setBillingCycle(e.target.value)}
+              className={inputClass}
+            >
+              {CYCLES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              تاريخ الفاتورة القادمة
+            </label>
+            <input
+              type="date"
+              dir="ltr"
+              value={nextBillingDate}
+              onChange={(e) => setNextBillingDate(e.target.value)}
+              className={`${inputClass} text-left`}
+            />
+          </div>
+        </div>
+
+        {/* Addons */}
+        <div>
+          <label className="block text-sm font-medium mb-3 text-[#CBD5E1]">
+            الإضافات
+          </label>
+          <div className="space-y-2">
+            {Object.values(ADDONS).map((addon) => {
+              const active = addons.includes(addon.key)
+              return (
+                <label
+                  key={addon.key}
+                  className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                    active
+                      ? 'border-[#22C55E]/40 bg-[#22C55E]/5'
+                      : 'border-[#1F1F2E] hover:border-[#22C55E]/20'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    onChange={() => toggleAddon(addon.key)}
+                    className="w-5 h-5 rounded accent-[#22C55E]"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm">{addon.name}</div>
+                    <div className="text-xs text-[#94A3B8]">{addon.description}</div>
+                  </div>
+                  <span className="text-sm font-bold text-[#22C55E] whitespace-nowrap">
+                    +{addon.price} ج
+                  </span>
+                </label>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Price summary */}
+        <div className="p-4 bg-[#111118] rounded-xl border border-[#1F1F2E] flex justify-between font-bold">
+          <span>الإجمالي شهرياً</span>
+          <span className="text-[#22C55E]">
+            {formatCurrency(basePlanPrice + addonsTotal)}
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full py-3.5 bg-[#22C55E] text-white rounded-xl font-semibold hover:bg-[#16A34A] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {saving ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              جاري الحفظ...
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              حفظ التغييرات
+            </>
+          )}
+        </button>
+      </form>
+    </div>
+  )
+}

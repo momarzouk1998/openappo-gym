@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAdminFetch } from '@/hooks/useAdminFetch'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { Building2, Search, Loader2 } from 'lucide-react'
+import { Building2, Search, Loader2, ChevronLeft } from 'lucide-react'
 
 interface AdminGym {
   id: string
@@ -33,6 +34,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
 
 export default function AdminGymsPage() {
   const { data, loading } = useAdminFetch<AdminData>('/api/admin/stats')
+  const router = useRouter()
   const [search, setSearch] = useState('')
 
   const allGyms = data?.gyms || []
@@ -78,19 +80,20 @@ export default function AdminGymsPage() {
                 <th className="p-4 font-medium">الإضافات</th>
                 <th className="p-4 font-medium">الحالة</th>
                 <th className="p-4 font-medium">تاريخ التسجيل</th>
+                <th className="p-4 font-medium"></th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-16 text-center">
+                  <td colSpan={7} className="p-16 text-center">
                     <Loader2 className="w-8 h-8 mx-auto mb-3 animate-spin text-[#22C55E]" />
                     <p className="text-[#64748B]">جاري التحميل...</p>
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-16 text-center text-[#64748B]">
+                  <td colSpan={7} className="p-16 text-center text-[#64748B]">
                     <Building2 className="w-16 h-16 mx-auto mb-4 opacity-20" />
                     <p className="text-lg mb-1">مفيش جيمات مسجّلة بعد</p>
                     <p className="text-sm">لما يسجّل أصحاب الجيمات، هتظهر هنا</p>
@@ -102,7 +105,8 @@ export default function AdminGymsPage() {
                   return (
                     <tr
                       key={gym.id}
-                      className="border-t border-[#1F1F2E] hover:bg-[#111118] transition-colors"
+                      onClick={() => router.push(`/admin/gyms/${gym.id}`)}
+                      className="border-t border-[#1F1F2E] hover:bg-[#111118] transition-colors cursor-pointer"
                     >
                       <td className="p-4 font-medium">{gym.name}</td>
                       <td className="p-4">
@@ -129,6 +133,12 @@ export default function AdminGymsPage() {
                       </td>
                       <td className="p-4 text-sm text-[#94A3B8]">
                         {formatDate(gym.createdAt)}
+                      </td>
+                      <td className="p-4">
+                        <span className="flex items-center gap-1 text-[#22C55E] text-sm font-medium">
+                          تحكم
+                          <ChevronLeft className="w-4 h-4" />
+                        </span>
                       </td>
                     </tr>
                   )
