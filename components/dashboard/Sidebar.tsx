@@ -19,6 +19,7 @@ import {
   LogOut,
   X,
   UserCircle,
+  CalendarClock,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -31,6 +32,7 @@ const navItems = [
   { href: '/dashboard', label: 'الرئيسية', icon: Home },
   { href: '/dashboard/members', label: 'الأعضاء', icon: Users },
   { href: '/dashboard/subscriptions', label: 'الاشتراكات', icon: CreditCard },
+  { href: '/dashboard/expiring', label: 'التجديدات', icon: CalendarClock },
   { href: '/dashboard/payments', label: 'المدفوعات', icon: Wallet },
 ]
 

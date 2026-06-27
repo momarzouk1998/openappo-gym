@@ -231,7 +231,62 @@ export async function getExpiringSubscriptions(gymId: string, days = 7) {
       plan: { select: { name: true } },
     },
     orderBy: { endDate: 'asc' },
-    take: 10,
+    take: 50,
+  })
+}
+
+// Subscriptions whose endDate has already passed (regardless of status field).
+// Returns member phone so the gym owner can WhatsApp them to renew.
+export async function getExpiredSubscriptions(gymId: string) {
+  const now = new Date()
+  return prisma.subscription.findMany({
+    where: {
+      gymId,
+      endDate: { lt: now },
+    },
+    include: {
+      member: {
+        select: { id: true, fullName: true, phone: true },
+      },
+      plan: { select: { name: true } },
+    },
+    orderBy: { endDate: 'desc' },
+    take: 200,
+  })
+}
+
+// Admin (super_admin) variants — cross-gym, includes gym name.
+export async function getExpiringSubscriptionsAdmin(days = 7) {
+  const now = new Date()
+  const limit = new Date(now.getTime() + days * 24 * 60 * 60 * 1000)
+  return prisma.subscription.findMany({
+    where: {
+      status: 'active',
+      endDate: { gte: now, lte: limit },
+    },
+    include: {
+      member: { select: { id: true, fullName: true, phone: true } },
+      plan: { select: { name: true } },
+      gym: { select: { id: true, name: true, slug: true } },
+    },
+    orderBy: { endDate: 'asc' },
+    take: 100,
+  })
+}
+
+export async function getExpiredSubscriptionsAdmin() {
+  const now = new Date()
+  return prisma.subscription.findMany({
+    where: {
+      endDate: { lt: now },
+    },
+    include: {
+      member: { select: { id: true, fullName: true, phone: true } },
+      plan: { select: { name: true } },
+      gym: { select: { id: true, name: true, slug: true } },
+    },
+    orderBy: { endDate: 'desc' },
+    take: 100,
   })
 }
 

@@ -11,6 +11,7 @@ const pageTitles: Record<string, string> = {
   '/dashboard/members': 'الأعضاء',
   '/dashboard/members/new': 'إضافة عضو',
   '/dashboard/subscriptions': 'الاشتراكات',
+  '/dashboard/expiring': 'التجديدات والمنتهية',
   '/dashboard/payments': 'المدفوعات',
   '/dashboard/expenses': 'المصروفات',
   '/dashboard/staff': 'الموظفون',

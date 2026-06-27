@@ -15,6 +15,7 @@ import {
   Settings2,
   Sun,
   Moon,
+  CalendarClock,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useTheme } from 'next-themes'
@@ -22,6 +23,7 @@ import { useTheme } from 'next-themes'
 const adminNav = [
   { href: '/admin', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/admin/gyms', label: 'الجيمات', icon: Building2 },
+  { href: '/admin/expiring', label: 'التجديدات', icon: CalendarClock },
   { href: '/admin/config', label: 'الأسعار', icon: Settings2 },
   { href: '/admin/billing', label: 'الفواتير', icon: Receipt },
 ]

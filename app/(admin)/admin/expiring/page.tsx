@@ -1,0 +1,237 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import {
+  formatDate,
+  whatsappUrl,
+  renewalReminderMessage,
+} from '@/lib/utils'
+import {
+  Clock,
+  AlertTriangle,
+  MessageCircle,
+  Loader2,
+  CalendarClock,
+  Building2,
+} from 'lucide-react'
+
+interface AdminSub {
+  id: string
+  endDate: string
+  member: { id: string; fullName: string; phone: string | null }
+  plan: { name: string }
+  gym: { id: string; name: string; slug: string }
+}
+
+interface AdminExpiringData {
+  expiring: AdminSub[]
+  expired: AdminSub[]
+}
+
+function StatusBadge({ status }: { status: 'expiring' | 'expired' }) {
+  if (status === 'expiring') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#F59E0B]/10 text-[#F59E0B]">
+        <Clock className="w-3 h-3" />
+        قرب الانتهاء
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#EF4444]/10 text-[#EF4444]">
+      <AlertTriangle className="w-3 h-3" />
+      منتهي
+    </span>
+  )
+}
+
+function AdminSubRow({ sub, status }: { sub: AdminSub; status: 'expiring' | 'expired' }) {
+  const msg = renewalReminderMessage(
+    sub.member.fullName,
+    sub.plan.name,
+    formatDate(sub.endDate)
+  )
+  const waUrl = whatsappUrl(sub.member.phone, msg)
+
+  return (
+    <div className="flex items-center gap-3 p-4 rounded-xl border border-app hover:surface-2 transition-colors">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1 flex-wrap">
+          <span className="font-medium text-strong truncate">{sub.member.fullName}</span>
+          <StatusBadge status={status} />
+        </div>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-muted-c">
+          <span className="flex items-center gap-1">
+            <Building2 className="w-3 h-3" />
+            {sub.gym.name}
+          </span>
+          <span>الخطة: {sub.plan.name}</span>
+          <span>ينتهي: {formatDate(sub.endDate)}</span>
+          {sub.member.phone ? (
+            <span dir="ltr">{sub.member.phone}</span>
+          ) : (
+            <span className="text-[#EF4444]">لا يوجد تليفون</span>
+          )}
+        </div>
+      </div>
+
+      {waUrl ? (
+        <a
+          href={waUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="تذكير عبر واتساب"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#25D366] text-white text-sm font-medium hover:bg-[#1ebe5d] transition-colors whitespace-nowrap"
+        >
+          <MessageCircle className="w-4 h-4" />
+          تذكير
+        </a>
+      ) : (
+        <button
+          disabled
+          title="لا يوجد تليفون مسجّل للعضو"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-app border border-app text-muted-c text-sm font-medium opacity-50 cursor-not-allowed whitespace-nowrap"
+        >
+          <MessageCircle className="w-4 h-4" />
+          تذكير
+        </button>
+      )}
+    </div>
+  )
+}
+
+function AdminSection({
+  title,
+  icon: Icon,
+  iconColor,
+  items,
+  status,
+  emptyMsg,
+}: {
+  title: string
+  icon: React.ComponentType<{ className?: string }>
+  iconColor: string
+  items: AdminSub[]
+  status: 'expiring' | 'expired'
+  emptyMsg: string
+}) {
+  return (
+    <div className="glass-card p-6 rounded-2xl">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl surface flex items-center justify-center">
+            <Icon className={`w-5 h-5 ${iconColor}`} />
+          </div>
+          <h3 className="font-cairo font-bold text-lg">{title}</h3>
+        </div>
+        <span className="px-3 py-1 rounded-full surface-2 text-sm font-bold text-strong">
+          {items.length}
+        </span>
+      </div>
+
+      {items.length === 0 ? (
+        <div className="py-10 text-center text-muted-c">
+          <Icon className="w-12 h-12 mx-auto mb-3 opacity-20" />
+          <p>{emptyMsg}</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {items.map((sub) => (
+            <AdminSubRow key={sub.id} sub={sub} status={status} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function AdminExpiringPage() {
+  const [data, setData] = useState<AdminExpiringData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/expiring')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.expiring || d.expired) setData(d)
+        else setError(d.error || 'فشل التحميل')
+      })
+      .catch(() => setError('حدث خطأ'))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-[#22C55E]" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20 text-[#EF4444]">
+        <p>{error}</p>
+      </div>
+    )
+  }
+
+  const expiring = data?.expiring || []
+  const expired = data?.expired || []
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
+          <CalendarClock className="w-5 h-5 text-[#22C55E]" />
+        </div>
+        <div>
+          <h2 className="font-cairo font-bold text-2xl">التجديدات (كل الجيمات)</h2>
+          <p className="text-sm text-muted-c">
+            نظرة عامة على الاشتراكات قرب الانتهاء والمنتهية عبر كل الجيمات
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="glass-card p-4 rounded-2xl flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
+            <Clock className="w-5 h-5 text-[#F59E0B]" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-strong">{expiring.length}</div>
+            <div className="text-xs text-muted-c">قرب الانتهاء</div>
+          </div>
+        </div>
+        <div className="glass-card p-4 rounded-2xl flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-[#EF4444]/10 flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5 text-[#EF4444]" />
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-strong">{expired.length}</div>
+            <div className="text-xs text-muted-c">منتهية</div>
+          </div>
+        </div>
+      </div>
+
+      <AdminSection
+        title="قرب الانتهاء"
+        icon={Clock}
+        iconColor="text-[#F59E0B]"
+        items={expiring}
+        status="expiring"
+        emptyMsg="مفيش اشتراكات قرب تنتهي 🎉"
+      />
+
+      <AdminSection
+        title="منتهية"
+        icon={AlertTriangle}
+        iconColor="text-[#EF4444]"
+        items={expired}
+        status="expired"
+        emptyMsg="مفيش اشتراكات منتهية"
+      />
+    </div>
+  )
+}
