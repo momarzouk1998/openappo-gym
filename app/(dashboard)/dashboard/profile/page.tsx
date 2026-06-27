@@ -39,7 +39,7 @@ export default function ProfilePage() {
   }, [user])
 
   const inputClass =
-    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   // --- Save profile (fullName + phone) ---
   const handleProfileSave = async (e: React.FormEvent) => {
@@ -105,7 +105,7 @@ export default function ProfilePage() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
         <h2 className="font-cairo font-bold text-2xl">الصفحة الشخصية</h2>
-        <p className="text-sm text-[#94A3B8]">بياناتك وكلمة المرور</p>
+        <p className="text-sm text-muted-c">بياناتك وكلمة المرور</p>
       </div>
 
       {/* Section 1: My data */}
@@ -131,27 +131,27 @@ export default function ProfilePage() {
 
         {/* Email — read-only */}
         <div>
-          <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+          <label className="block text-sm font-medium mb-2 text-soft">
             البريد الإلكتروني
           </label>
           <div className="relative">
-            <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+            <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
             <input
               type="email"
               value={user?.email || ''}
               readOnly
               dir="ltr"
-              className={`${inputClass} pr-11 text-left text-[#64748B] cursor-not-allowed`}
+              className={`${inputClass} pr-11 text-left text-faint cursor-not-allowed`}
             />
           </div>
-          <p className="text-xs text-[#64748B] mt-1.5">
+          <p className="text-xs text-faint mt-1.5">
             البريد الإلكتروني لا يمكن تغييره
           </p>
         </div>
 
         {/* Full name */}
         <div>
-          <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+          <label className="block text-sm font-medium mb-2 text-soft">
             الاسم الكامل *
           </label>
           <input
@@ -166,11 +166,11 @@ export default function ProfilePage() {
 
         {/* Phone */}
         <div>
-          <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+          <label className="block text-sm font-medium mb-2 text-soft">
             رقم التليفون
           </label>
           <div className="relative">
-            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+            <Phone className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
             <input
               type="tel"
               value={phone}
@@ -223,7 +223,7 @@ export default function ProfilePage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+          <label className="block text-sm font-medium mb-2 text-soft">
             كلمة المرور الحالية *
           </label>
           <input
@@ -239,7 +239,7 @@ export default function ProfilePage() {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+            <label className="block text-sm font-medium mb-2 text-soft">
               كلمة المرور الجديدة *
             </label>
             <input
@@ -253,7 +253,7 @@ export default function ProfilePage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+            <label className="block text-sm font-medium mb-2 text-soft">
               تأكيد كلمة المرور *
             </label>
             <input

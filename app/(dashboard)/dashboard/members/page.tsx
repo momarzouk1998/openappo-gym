@@ -88,7 +88,7 @@ export default function MembersPage() {
 
   const getSubscriptionStatus = (subs: MemberSub[]) => {
     if (!subs || subs.length === 0)
-      return { label: 'لا اشتراك', color: 'text-[#64748B] bg-[#64748B]/10' }
+      return { label: 'لا اشتراك', color: 'text-faint bg-[#64748B]/10' }
     const latest = subs[0]
     if (latest.status === 'frozen')
       return { label: 'مجمّد', color: 'text-[#3B82F6] bg-[#3B82F6]/10' }
@@ -104,7 +104,7 @@ export default function MembersPage() {
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="font-cairo font-bold text-2xl">الأعضاء</h2>
-          <p className="text-sm text-[#94A3B8]">إجمالي الأعضاء: {total}</p>
+          <p className="text-sm text-muted-c">إجمالي الأعضاء: {total}</p>
         </div>
         <Link
           href="/dashboard/members/new"
@@ -119,19 +119,19 @@ export default function MembersPage() {
       <div className="glass-card p-4 rounded-2xl">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ابحث بالاسم أو التليفون أو رقم العضوية..."
-              className="w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-[#64748B] focus:outline-none focus:border-[#22C55E]/50"
+              className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
+            className="bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
           >
             <option value="">كل الحالات</option>
             <option value="active">نشط</option>
@@ -144,7 +144,7 @@ export default function MembersPage() {
       <div className="glass-card rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-right">
-            <thead className="bg-[#111118] text-sm text-[#64748B]">
+            <thead className="surface text-sm text-faint">
               <tr>
                 <th className="p-4 font-medium">رقم العضوية</th>
                 <th className="p-4 font-medium">الاسم</th>
@@ -159,12 +159,12 @@ export default function MembersPage() {
                 <tr>
                   <td colSpan={6} className="p-16 text-center">
                     <Loader2 className="w-8 h-8 mx-auto mb-3 animate-spin text-[#22C55E]" />
-                    <p className="text-[#64748B]">جاري التحميل...</p>
+                    <p className="text-faint">جاري التحميل...</p>
                   </td>
                 </tr>
               ) : members.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-16 text-center text-[#64748B]">
+                  <td colSpan={6} className="p-16 text-center text-faint">
                     <Users className="w-16 h-16 mx-auto mb-4 opacity-20" />
                     <p className="text-lg mb-1">مفيش أعضاء بعد</p>
                     <p className="text-sm">ابدأ بإضافة أول عضو في جيمك</p>
@@ -184,10 +184,10 @@ export default function MembersPage() {
                   return (
                     <tr
                       key={member.id}
-                      className="border-t border-[#1F1F2E] hover:bg-[#111118] transition-colors"
+                      className="border-t border-app hover:surface transition-colors"
                     >
                       <td className="p-4">
-                        <span className="font-mono text-sm text-[#94A3B8]" dir="ltr">
+                        <span className="font-mono text-sm text-muted-c" dir="ltr">
                           {member.memberNumber}
                         </span>
                       </td>
@@ -201,17 +201,17 @@ export default function MembersPage() {
                         {member.phone ? (
                           <a
                             href={`tel:${member.phone}`}
-                            className="flex items-center gap-1 text-[#94A3B8] hover:text-[#22C55E] transition-colors"
+                            className="flex items-center gap-1 text-muted-c hover:text-[#22C55E] transition-colors"
                             dir="ltr"
                           >
                             <Phone className="w-3.5 h-3.5" />
                             {member.phone}
                           </a>
                         ) : (
-                          <span className="text-[#64748B]">—</span>
+                          <span className="text-faint">—</span>
                         )}
                       </td>
-                      <td className="p-4 text-sm text-[#94A3B8]">
+                      <td className="p-4 text-sm text-muted-c">
                         {latestSub ? formatDate(latestSub.endDate) : '—'}
                       </td>
                       <td className="p-4">
@@ -244,17 +244,17 @@ export default function MembersPage() {
           <button
             onClick={() => fetchMembers(page - 1, search, statusFilter)}
             disabled={page === 1}
-            className="p-2 rounded-lg border border-[#1F1F2E] disabled:opacity-30 hover:bg-[#111118] transition-colors"
+            className="p-2 rounded-lg border border-app disabled:opacity-30 hover:surface transition-colors"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
-          <span className="px-4 py-2 text-sm text-[#94A3B8]">
+          <span className="px-4 py-2 text-sm text-muted-c">
             صفحة {page} من {totalPages}
           </span>
           <button
             onClick={() => fetchMembers(page + 1, search, statusFilter)}
             disabled={page === totalPages}
-            className="p-2 rounded-lg border border-[#1F1F2E] disabled:opacity-30 hover:bg-[#111118] transition-colors"
+            className="p-2 rounded-lg border border-app disabled:opacity-30 hover:surface transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>

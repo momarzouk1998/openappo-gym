@@ -1,20 +1,45 @@
 'use client'
 
-import { Menu, Bell } from 'lucide-react'
+import { Menu, Bell, Sun, Moon } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 
 interface HeaderProps {
   title: string
   onMenuClick: () => void
 }
 
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  // Avoid hydration mismatch — render a placeholder until mounted
+  if (!mounted) {
+    return <span className="w-9 h-9" aria-hidden />
+  }
+
+  const isLight = theme === 'light'
+  return (
+    <button
+      onClick={() => setTheme(isLight ? 'dark' : 'light')}
+      className="p-2 text-muted-c hover:text-strong transition-colors rounded-lg hover:surface"
+      aria-label={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
+      title={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
+    >
+      {isLight ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+    </button>
+  )
+}
+
 export function Header({ title, onMenuClick }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-30 bg-[#0A0A0F]/80 backdrop-blur-lg border-b border-[#1F1F2E]">
+    <header className="sticky top-0 z-30 bg-app/80 backdrop-blur-lg border-b border-app">
       <div className="px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuClick}
-            className="lg:hidden p-2 -mr-2 text-white"
+            className="lg:hidden p-2 -mr-2 text-strong"
             aria-label="القائمة"
           >
             <Menu className="w-6 h-6" />
@@ -23,8 +48,10 @@ export function Header({ title, onMenuClick }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
+          <ThemeToggle />
+
           <button
-            className="relative p-2 text-[#94A3B8] hover:text-white transition-colors"
+            className="relative p-2 text-muted-c hover:text-strong transition-colors"
             aria-label="الإشعارات"
           >
             <Bell className="w-5 h-5" />

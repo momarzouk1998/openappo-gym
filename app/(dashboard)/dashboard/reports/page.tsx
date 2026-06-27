@@ -68,7 +68,7 @@ export default function ReportsPage() {
     return (
       <div className="text-center py-20 text-red-400">
         <p>تعذّر تحميل التقارير</p>
-        <p className="text-sm text-[#64748B] mt-1">{error}</p>
+        <p className="text-sm text-faint mt-1">{error}</p>
       </div>
     )
   }
@@ -138,7 +138,7 @@ export default function ReportsPage() {
         </div>
         <div>
           <h2 className="font-cairo font-bold text-2xl">التقارير</h2>
-          <p className="text-sm text-[#94A3B8]">نظرة تحليلية على أداء الجيم</p>
+          <p className="text-sm text-muted-c">نظرة تحليلية على أداء الجيم</p>
         </div>
       </div>
 
@@ -154,7 +154,7 @@ export default function ReportsPage() {
             <div className={`text-2xl font-bold font-cairo mb-1 ${stat.color}`}>
               {stat.value}
             </div>
-            <div className="text-sm text-[#94A3B8]">{stat.label}</div>
+            <div className="text-sm text-muted-c">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -163,7 +163,7 @@ export default function ReportsPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="glass-card p-6 rounded-2xl">
           <h3 className="font-cairo font-bold text-lg mb-1">إيرادات آخر 6 شهور</h3>
-          <p className="text-sm text-[#64748B] mb-6">إجمالي المدفوعات الشهرية</p>
+          <p className="text-sm text-faint mb-6">إجمالي المدفوعات الشهرية</p>
           {revenueChart.length > 0 ? (
             <div className="h-64" dir="ltr">
               <ResponsiveContainer width="100%" height="100%">
@@ -195,7 +195,7 @@ export default function ReportsPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#64748B]">
+            <div className="h-64 flex items-center justify-center text-faint">
               <div className="text-center">
                 <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>مفيش بيانات إيرادات بعد</p>
@@ -206,7 +206,7 @@ export default function ReportsPage() {
 
         <div className="glass-card p-6 rounded-2xl">
           <h3 className="font-cairo font-bold text-lg mb-1">أعضاء جدد شهرياً</h3>
-          <p className="text-sm text-[#64748B] mb-6">نمو قاعدة الأعضاء</p>
+          <p className="text-sm text-faint mb-6">نمو قاعدة الأعضاء</p>
           {memberGrowth.length > 0 ? (
             <div className="h-64" dir="ltr">
               <ResponsiveContainer width="100%" height="100%">
@@ -239,7 +239,7 @@ export default function ReportsPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#64748B]">
+            <div className="h-64 flex items-center justify-center text-faint">
               <div className="text-center">
                 <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>مفيش بيانات أعضاء بعد</p>
@@ -253,7 +253,7 @@ export default function ReportsPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="glass-card p-6 rounded-2xl">
           <h3 className="font-cairo font-bold text-lg mb-1">الإيرادات حسب طريقة الدفع</h3>
-          <p className="text-sm text-[#64748B] mb-6">آخر 12 شهر</p>
+          <p className="text-sm text-faint mb-6">آخر 12 شهر</p>
           {methodPieData.length > 0 ? (
             <div className="h-64" dir="ltr">
               <ResponsiveContainer width="100%" height="100%">
@@ -286,7 +286,7 @@ export default function ReportsPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#64748B]">
+            <div className="h-64 flex items-center justify-center text-faint">
               <div className="text-center">
                 <Wallet className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>مفيش مدفوعات بعد</p>
@@ -297,7 +297,7 @@ export default function ReportsPage() {
 
         <div className="glass-card p-6 rounded-2xl">
           <h3 className="font-cairo font-bold text-lg mb-1">توزيع الاشتراكات</h3>
-          <p className="text-sm text-[#64748B] mb-6">حسب الحالة</p>
+          <p className="text-sm text-faint mb-6">حسب الحالة</p>
           {statusPieData.length > 0 ? (
             <div className="h-64" dir="ltr">
               <ResponsiveContainer width="100%" height="100%">
@@ -331,7 +331,7 @@ export default function ReportsPage() {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-64 flex items-center justify-center text-[#64748B]">
+            <div className="h-64 flex items-center justify-center text-faint">
               <div className="text-center">
                 <CreditCard className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>مفيش اشتراكات بعد</p>

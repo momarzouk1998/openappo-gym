@@ -139,14 +139,14 @@ export default function AdminGymEditPage() {
 
   if (!gym) {
     return (
-      <div className="text-center py-20 text-[#94A3B8]">
+      <div className="text-center py-20 text-muted-c">
         <p>الجيم غير موجود</p>
       </div>
     )
   }
 
   const inputClass =
-    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   const addonsTotal = addons.reduce(
     (sum, key) => sum + (ADDONS[key as keyof typeof ADDONS]?.price ?? 0),
@@ -158,7 +158,7 @@ export default function AdminGymEditPage() {
       {/* Back */}
       <button
         onClick={() => router.push('/admin/gyms')}
-        className="flex items-center gap-2 text-sm text-[#94A3B8] hover:text-white transition-colors"
+        className="flex items-center gap-2 text-sm text-muted-c hover:text-white transition-colors"
       >
         <ArrowRight className="w-4 h-4" />
         العودة للجيمات
@@ -171,7 +171,7 @@ export default function AdminGymEditPage() {
         </div>
         <div>
           <h2 className="font-cairo font-bold text-2xl">{gym.name}</h2>
-          <p className="text-sm text-[#94A3B8]">
+          <p className="text-sm text-muted-c">
             {gym.ownerName} ·{' '}
             <span dir="ltr">{gym.ownerEmail}</span>
           </p>
@@ -183,24 +183,24 @@ export default function AdminGymEditPage() {
         <h3 className="font-cairo font-bold text-lg mb-4">معلومات الجيم</h3>
         <div className="grid sm:grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-[#94A3B8] block mb-1">تليفون الجيم</span>
+            <span className="text-muted-c block mb-1">تليفون الجيم</span>
             <span dir="ltr">{gym.phone || '—'}</span>
           </div>
           <div>
-            <span className="text-[#94A3B8] block mb-1">المدينة</span>
+            <span className="text-muted-c block mb-1">المدينة</span>
             <span>{gym.city || '—'}</span>
           </div>
           <div>
-            <span className="text-[#94A3B8] block mb-1">العنوان</span>
+            <span className="text-muted-c block mb-1">العنوان</span>
             <span>{gym.address || '—'}</span>
           </div>
           <div>
-            <span className="text-[#94A3B8] block mb-1">تاريخ التسجيل</span>
+            <span className="text-muted-c block mb-1">تاريخ التسجيل</span>
             <span>{formatDate(gym.createdAt)}</span>
           </div>
           {gym.lastPaidAt && (
             <div>
-              <span className="text-[#94A3B8] block mb-1">آخر دفع</span>
+              <span className="text-muted-c block mb-1">آخر دفع</span>
               <span>{formatDate(gym.lastPaidAt)}</span>
             </div>
           )}
@@ -225,7 +225,7 @@ export default function AdminGymEditPage() {
 
         {/* Plan picker */}
         <div>
-          <label className="block text-sm font-medium mb-3 text-[#CBD5E1]">
+          <label className="block text-sm font-medium mb-3 text-soft">
             الباقة
           </label>
           <div className="grid grid-cols-2 gap-3">
@@ -239,13 +239,13 @@ export default function AdminGymEditPage() {
                   className={`p-4 rounded-xl border-2 text-right transition-all ${
                     active
                       ? 'border-[#22C55E] bg-[#22C55E]/5'
-                      : 'border-[#1F1F2E] hover:border-[#22C55E]/30'
+                      : 'border-app hover:border-[#22C55E]/30'
                   }`}
                 >
                   <div className="font-cairo font-bold mb-1">{plan.name}</div>
                   <div className="text-xl font-bold text-[#22C55E]">
                     {plan.price}
-                    <span className="text-xs text-[#64748B] font-normal"> ج/شهر</span>
+                    <span className="text-xs text-faint font-normal"> ج/شهر</span>
                   </div>
                 </button>
               )
@@ -256,7 +256,7 @@ export default function AdminGymEditPage() {
         {/* Status + cycle + next billing */}
         <div className="grid sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+            <label className="block text-sm font-medium mb-2 text-soft">
               الحالة
             </label>
             <select
@@ -272,7 +272,7 @@ export default function AdminGymEditPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+            <label className="block text-sm font-medium mb-2 text-soft">
               دورة الفاتورة
             </label>
             <select
@@ -288,7 +288,7 @@ export default function AdminGymEditPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+            <label className="block text-sm font-medium mb-2 text-soft">
               تاريخ الفاتورة القادمة
             </label>
             <input
@@ -303,7 +303,7 @@ export default function AdminGymEditPage() {
 
         {/* Addons */}
         <div>
-          <label className="block text-sm font-medium mb-3 text-[#CBD5E1]">
+          <label className="block text-sm font-medium mb-3 text-soft">
             الإضافات
           </label>
           <div className="space-y-2">
@@ -315,7 +315,7 @@ export default function AdminGymEditPage() {
                   className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     active
                       ? 'border-[#22C55E]/40 bg-[#22C55E]/5'
-                      : 'border-[#1F1F2E] hover:border-[#22C55E]/20'
+                      : 'border-app hover:border-[#22C55E]/20'
                   }`}
                 >
                   <input
@@ -326,7 +326,7 @@ export default function AdminGymEditPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm">{addon.name}</div>
-                    <div className="text-xs text-[#94A3B8]">{addon.description}</div>
+                    <div className="text-xs text-muted-c">{addon.description}</div>
                   </div>
                   <span className="text-sm font-bold text-[#22C55E] whitespace-nowrap">
                     +{addon.price} ج
@@ -338,7 +338,7 @@ export default function AdminGymEditPage() {
         </div>
 
         {/* Price summary */}
-        <div className="p-4 bg-[#111118] rounded-xl border border-[#1F1F2E] flex justify-between font-bold">
+        <div className="p-4 surface rounded-xl border border-app flex justify-between font-bold">
           <span>الإجمالي شهرياً</span>
           <span className="text-[#22C55E]">
             {formatCurrency(basePlanPrice + addonsTotal)}

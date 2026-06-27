@@ -47,7 +47,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   active: { label: 'فعّال', color: 'text-[#22C55E] bg-[#22C55E]/10' },
   trial: { label: 'تجريبي', color: 'text-[#F59E0B] bg-[#F59E0B]/10' },
   suspended: { label: 'معلّق', color: 'text-[#EF4444] bg-[#EF4444]/10' },
-  cancelled: { label: 'ملغي', color: 'text-[#64748B] bg-[#64748B]/10' },
+  cancelled: { label: 'ملغي', color: 'text-faint bg-[#64748B]/10' },
 }
 
 export default function AdminDashboard() {
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       <div>
         <h2 className="font-cairo font-bold text-2xl mb-1">نظرة عامة</h2>
-        <p className="text-[#94A3B8]">إحصائيات المنصة والجيمات</p>
+        <p className="text-muted-c">إحصائيات المنصة والجيمات</p>
       </div>
 
       {/* Gym stats */}
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
               <stat.icon className={`w-5 h-5 ${stat.color}`} />
             </div>
             <div className="text-3xl font-bold font-cairo mb-1">{stat.value}</div>
-            <div className="text-sm text-[#94A3B8]">{stat.label}</div>
+            <div className="text-sm text-muted-c">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
           <div key={i} className="glass-card p-5 rounded-2xl">
             <div className="flex items-center gap-3 mb-3">
               <stat.icon className="w-5 h-5 text-[#22C55E]" />
-              <span className="text-sm text-[#94A3B8]">{stat.label}</span>
+              <span className="text-sm text-muted-c">{stat.label}</span>
             </div>
             <div className="text-2xl font-bold font-cairo">{stat.value}</div>
           </div>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
 
       {/* Gyms table */}
       <div className="glass-card rounded-2xl overflow-hidden">
-        <div className="p-5 border-b border-[#1F1F2E] flex items-center justify-between">
+        <div className="p-5 border-b border-app flex items-center justify-between">
           <h3 className="font-cairo font-bold text-lg">أحدث الجيمات</h3>
           <Link href="/admin/gyms" className="text-sm text-[#22C55E] hover:underline">
             عرض الكل
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-right">
-            <thead className="bg-[#111118] text-sm text-[#64748B]">
+            <thead className="surface text-sm text-faint">
               <tr>
                 <th className="p-4 font-medium">الجيم</th>
                 <th className="p-4 font-medium">المالك</th>
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
             <tbody>
               {recentGyms.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-12 text-center text-[#64748B]">
+                  <td colSpan={5} className="p-12 text-center text-faint">
                     <Building2 className="w-12 h-12 mx-auto mb-3 opacity-30" />
                     <p>مفيش جيمات مسجّلة بعد</p>
                   </td>
@@ -141,22 +141,22 @@ export default function AdminDashboard() {
                 recentGyms.map((gym) => {
                   const st = statusConfig[gym.status] || statusConfig.trial
                   return (
-                    <tr key={gym.id} className="border-t border-[#1F1F2E] hover:bg-[#111118] transition-colors">
+                    <tr key={gym.id} className="border-t border-app hover:surface transition-colors">
                       <td className="p-4 font-medium">{gym.name}</td>
-                      <td className="p-4 text-sm text-[#94A3B8]">{gym.ownerName}</td>
+                      <td className="p-4 text-sm text-muted-c">{gym.ownerName}</td>
                       <td className="p-4 text-sm">
                         <span className="text-[#22C55E]">
                           {gym.basePlanPrice >= 599 ? 'Pro' : 'Starter'}
                         </span>
                         {' '}
-                        <span className="text-[#64748B]">{formatCurrency(gym.basePlanPrice)}</span>
+                        <span className="text-faint">{formatCurrency(gym.basePlanPrice)}</span>
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${st.color}`}>
                           {st.label}
                         </span>
                       </td>
-                      <td className="p-4 text-sm text-[#94A3B8]">{formatDate(gym.createdAt)}</td>
+                      <td className="p-4 text-sm text-muted-c">{formatDate(gym.createdAt)}</td>
                     </tr>
                   )
                 })

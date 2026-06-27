@@ -7,7 +7,7 @@ export function Footer() {
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '201558282760'
 
   return (
-    <footer id="contact" className="border-t border-[#1F1F2E] py-16">
+    <footer id="contact" className="border-t border-app py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
@@ -20,11 +20,11 @@ export function Footer() {
                 Open<span className="text-[#22C55E]">Gym</span>
               </span>
             </Link>
-            <p className="text-[#94A3B8] max-w-md leading-relaxed mb-6">
+            <p className="text-muted-c max-w-md leading-relaxed mb-6">
               منصة SaaS متكاملة لإدارة الجيمات في مصر والمنطقة العربية. ساعدنا
               أصحاب الجيمات يربحوا وقت وفلوس.
             </p>
-            <p className="text-sm text-[#64748B]">by OpenAppo</p>
+            <p className="text-sm text-faint">by OpenAppo</p>
           </div>
 
           {/* Links */}
@@ -34,7 +34,7 @@ export function Footer() {
               <li>
                 <Link
                   href="#features"
-                  className="text-[#94A3B8] hover:text-[#22C55E] transition-colors"
+                  className="text-muted-c hover:text-[#22C55E] transition-colors"
                 >
                   المميزات
                 </Link>
@@ -42,7 +42,7 @@ export function Footer() {
               <li>
                 <Link
                   href="#pricing"
-                  className="text-[#94A3B8] hover:text-[#22C55E] transition-colors"
+                  className="text-muted-c hover:text-[#22C55E] transition-colors"
                 >
                   الأسعار
                 </Link>
@@ -50,7 +50,7 @@ export function Footer() {
               <li>
                 <Link
                   href="#how"
-                  className="text-[#94A3B8] hover:text-[#22C55E] transition-colors"
+                  className="text-muted-c hover:text-[#22C55E] transition-colors"
                 >
                   كيف يشتغل
                 </Link>
@@ -58,7 +58,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/login"
-                  className="text-[#94A3B8] hover:text-[#22C55E] transition-colors"
+                  className="text-muted-c hover:text-[#22C55E] transition-colors"
                 >
                   تسجيل الدخول
                 </Link>
@@ -74,18 +74,18 @@ export function Footer() {
                 href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 text-[#94A3B8] hover:text-[#22C55E] transition-colors group"
+                className="flex items-center gap-3 text-muted-c hover:text-[#22C55E] transition-colors group"
               >
-                <div className="w-9 h-9 rounded-lg bg-[#111118] flex items-center justify-center group-hover:bg-[#22C55E]/10 transition-colors">
+                <div className="w-9 h-9 rounded-lg surface flex items-center justify-center group-hover:bg-[#22C55E]/10 transition-colors">
                   <MessageCircle className="w-4 h-4" />
                 </div>
                 <span>واتساب: تكلم معنا</span>
               </a>
               <a
                 href="mailto:hello@openappo.com"
-                className="flex items-center gap-3 text-[#94A3B8] hover:text-[#22C55E] transition-colors group"
+                className="flex items-center gap-3 text-muted-c hover:text-[#22C55E] transition-colors group"
               >
-                <div className="w-9 h-9 rounded-lg bg-[#111118] flex items-center justify-center group-hover:bg-[#22C55E]/10 transition-colors">
+                <div className="w-9 h-9 rounded-lg surface flex items-center justify-center group-hover:bg-[#22C55E]/10 transition-colors">
                   <Mail className="w-4 h-4" />
                 </div>
                 <span>hello@openappo.com</span>
@@ -95,11 +95,11 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-[#1F1F2E] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-[#64748B]">
+        <div className="pt-8 border-t border-app flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-faint">
             © {new Date().getFullYear()} OpenGym — جميع الحقوق محفوظة
           </p>
-          <p className="text-sm text-[#64748B]">
+          <p className="text-sm text-faint">
             صُنع بـ ❤️ في مصر
           </p>
         </div>

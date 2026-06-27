@@ -80,7 +80,7 @@ export function HowItWorks() {
                     whileHover={{
                       boxShadow: '0 0 40px rgba(34,197,94,0.3)',
                     }}
-                    className="w-20 h-20 rounded-2xl bg-[#111118] border border-[#22C55E]/30 flex items-center justify-center mx-auto transition-all"
+                    className="w-20 h-20 rounded-2xl surface border border-[#22C55E]/30 flex items-center justify-center mx-auto transition-all"
                   >
                     <step.icon className="w-9 h-9 text-[#22C55E]" />
                   </motion.div>
@@ -99,7 +99,7 @@ export function HowItWorks() {
                   </motion.div>
                 </motion.div>
                 <h3 className="font-cairo font-bold text-xl mb-3">{step.title}</h3>
-                <p className="text-[#94A3B8] leading-relaxed max-w-xs mx-auto">
+                <p className="text-muted-c leading-relaxed max-w-xs mx-auto">
                   {step.desc}
                 </p>
               </motion.div>

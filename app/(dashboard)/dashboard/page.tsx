@@ -68,7 +68,7 @@ export default function DashboardHome() {
           <h2 className="font-cairo font-bold text-2xl mb-1">
             أهلاً {userName ? `${userName}` : ''} 👋
           </h2>
-          <p className="text-[#94A3B8]">إليك ملخص {gymName} اليوم</p>
+          <p className="text-muted-c">إليك ملخص {gymName} اليوم</p>
         </div>
         <Link
           href="/dashboard/members/new"
@@ -97,7 +97,7 @@ export default function DashboardHome() {
               <div className="text-3xl font-bold font-cairo mb-1">
                 {stats?.totalMembers ?? 0}
               </div>
-              <div className="text-sm text-[#94A3B8]">إجمالي الأعضاء</div>
+              <div className="text-sm text-muted-c">إجمالي الأعضاء</div>
             </div>
 
             <div className="glass-card p-5 rounded-2xl hover:border-[#4ADE80]/30 transition-colors">
@@ -109,7 +109,7 @@ export default function DashboardHome() {
               <div className="text-3xl font-bold font-cairo mb-1">
                 {stats?.activeSubs ?? 0}
               </div>
-              <div className="text-sm text-[#94A3B8]">الاشتراكات الفعّالة</div>
+              <div className="text-sm text-muted-c">الاشتراكات الفعّالة</div>
             </div>
 
             <div className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors">
@@ -122,7 +122,7 @@ export default function DashboardHome() {
               <div className="text-3xl font-bold font-cairo mb-1">
                 {formatCurrency(stats?.monthlyRevenue ?? 0)}
               </div>
-              <div className="text-sm text-[#94A3B8]">إيرادات الشهر</div>
+              <div className="text-sm text-muted-c">إيرادات الشهر</div>
             </div>
 
             <div className="glass-card p-5 rounded-2xl hover:border-[#F59E0B]/30 transition-colors">
@@ -134,7 +134,7 @@ export default function DashboardHome() {
               <div className="text-3xl font-bold font-cairo mb-1">
                 {stats?.expiringSoon ?? 0}
               </div>
-              <div className="text-sm text-[#94A3B8]">تنتهي قريباً (7 أيام)</div>
+              <div className="text-sm text-muted-c">تنتهي قريباً (7 أيام)</div>
             </div>
           </div>
 
@@ -143,7 +143,7 @@ export default function DashboardHome() {
             {/* Revenue Chart */}
             <div className="lg:col-span-2 glass-card p-6 rounded-2xl">
               <h3 className="font-cairo font-bold text-lg mb-1">إيرادات آخر 6 شهور</h3>
-              <p className="text-sm text-[#64748B] mb-6">إجمالي المدفوعات الشهرية</p>
+              <p className="text-sm text-faint mb-6">إجمالي المدفوعات الشهرية</p>
 
               {revenueChart.length > 0 ? (
                 <div className="h-64" dir="ltr">
@@ -182,7 +182,7 @@ export default function DashboardHome() {
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="h-64 flex items-center justify-center text-[#64748B]">
+                <div className="h-64 flex items-center justify-center text-faint">
                   <div className="text-center">
                     <TrendingUp className="w-12 h-12 mx-auto mb-3 opacity-30" />
                     <p>الرسم البياني سيظهر هنا بعد إضافة المدفوعات</p>
@@ -194,18 +194,18 @@ export default function DashboardHome() {
             {/* Expiring Subscriptions */}
             <div className="glass-card p-6 rounded-2xl">
               <h3 className="font-cairo font-bold text-lg mb-1">تنتهي قريباً</h3>
-              <p className="text-sm text-[#64748B] mb-6">اشتراكات خلال 7 أيام</p>
+              <p className="text-sm text-faint mb-6">اشتراكات خلال 7 أيام</p>
 
               {expiringSoon.length > 0 ? (
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {expiringSoon.map((sub) => (
                     <div
                       key={sub.id}
-                      className="flex items-center justify-between p-3 bg-[#111118] rounded-xl"
+                      className="flex items-center justify-between p-3 surface rounded-xl"
                     >
                       <div>
                         <div className="font-medium text-sm">{sub.member.fullName}</div>
-                        <div className="text-xs text-[#64748B]">{sub.plan.name}</div>
+                        <div className="text-xs text-faint">{sub.plan.name}</div>
                       </div>
                       <div className="text-left">
                         <div className="text-xs text-[#F59E0B] font-medium">
@@ -216,7 +216,7 @@ export default function DashboardHome() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-[#64748B]">
+                <div className="text-center py-8 text-faint">
                   <AlertCircle className="w-10 h-10 mx-auto mb-2 opacity-30" />
                   <p className="text-sm">مفيش اشتراكات تنتهي قريباً</p>
                 </div>

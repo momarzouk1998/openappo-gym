@@ -195,14 +195,14 @@ export function PWARegister() {
                 <div className="font-bold text-sm mb-0.5">
                   ثبّت OpenGym على جهازك
                 </div>
-                <div className="text-xs text-[#94A3B8]">
+                <div className="text-xs text-muted-c">
                   افتحه بسرعة بدون متصفح
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={dismissInstall}
-                  className="p-2 text-[#64748B] hover:text-white"
+                  className="p-2 text-faint hover:text-white"
                   aria-label="إغلاق"
                 >
                   <X className="w-4 h-4" />
@@ -236,14 +236,14 @@ export function PWARegister() {
                 <div className="font-bold text-sm mb-0.5">
                   فعّل الإشعارات
                 </div>
-                <div className="text-xs text-[#94A3B8]">
+                <div className="text-xs text-muted-c">
                   هيوصلك تنبيهات الاشتراكات والمدفوعات في الوقت
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={dismissNotifBanner}
-                  className="p-2 text-[#64748B] hover:text-white"
+                  className="p-2 text-faint hover:text-white"
                   aria-label="إغلاق"
                 >
                   <X className="w-4 h-4" />
@@ -280,7 +280,7 @@ export function PWARegister() {
               {push.subscribed ? (
                 <Bell className="w-4 h-4 text-[#22C55E]" />
               ) : (
-                <BellOff className="w-4 h-4 text-[#64748B]" />
+                <BellOff className="w-4 h-4 text-faint" />
               )}
             </button>
           </motion.div>

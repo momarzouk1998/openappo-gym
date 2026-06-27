@@ -49,7 +49,7 @@ const statusConfig: Record<string, { label: string; color: string }> = {
   active: { label: 'فعّال', color: 'text-[#22C55E] bg-[#22C55E]/10' },
   expired: { label: 'منتهي', color: 'text-[#EF4444] bg-[#EF4444]/10' },
   frozen: { label: 'مجمّد', color: 'text-[#3B82F6] bg-[#3B82F6]/10' },
-  cancelled: { label: 'ملغي', color: 'text-[#64748B] bg-[#64748B]/10' },
+  cancelled: { label: 'ملغي', color: 'text-faint bg-[#64748B]/10' },
 }
 
 export default function SubscriptionsPage() {
@@ -203,13 +203,13 @@ export default function SubscriptionsPage() {
   ]
 
   const inputClass =
-    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="font-cairo font-bold text-2xl">الاشتراكات</h2>
-        <p className="text-sm text-[#94A3B8]">إدارة اشتراكات الأعضاء</p>
+        <p className="text-sm text-muted-c">إدارة اشتراكات الأعضاء</p>
       </div>
 
       {/* Stats */}
@@ -219,7 +219,7 @@ export default function SubscriptionsPage() {
             <div className={`text-3xl font-bold font-cairo mb-1 ${stat.color}`}>
               {stat.value}
             </div>
-            <div className="text-sm text-[#94A3B8]">{stat.label}</div>
+            <div className="text-sm text-muted-c">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -228,19 +228,19 @@ export default function SubscriptionsPage() {
       <div className="glass-card p-4 rounded-2xl">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ابحث باسم العضو أو التليفون..."
-              className="w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-[#64748B] focus:outline-none focus:border-[#22C55E]/50"
+              className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
+            className="bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
           >
             <option value="all">كل الحالات</option>
             <option value="active">فعّال</option>
@@ -254,7 +254,7 @@ export default function SubscriptionsPage() {
       <div className="glass-card rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-right">
-            <thead className="bg-[#111118] text-sm text-[#64748B]">
+            <thead className="surface text-sm text-faint">
               <tr>
                 <th className="p-4 font-medium">العضو</th>
                 <th className="p-4 font-medium">الخطة</th>
@@ -270,12 +270,12 @@ export default function SubscriptionsPage() {
                 <tr>
                   <td colSpan={7} className="p-16 text-center">
                     <Loader2 className="w-8 h-8 mx-auto mb-3 animate-spin text-[#22C55E]" />
-                    <p className="text-[#64748B]">جاري التحميل...</p>
+                    <p className="text-faint">جاري التحميل...</p>
                   </td>
                 </tr>
               ) : subs.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-16 text-center text-[#64748B]">
+                  <td colSpan={7} className="p-16 text-center text-faint">
                     <CreditCard className="w-16 h-16 mx-auto mb-4 opacity-20" />
                     <p className="text-lg mb-1">مفيش اشتراكات</p>
                     <p className="text-sm">أضف اشتراك من خلال إضافة عضو جديد</p>
@@ -287,19 +287,19 @@ export default function SubscriptionsPage() {
                   return (
                     <tr
                       key={sub.id}
-                      className="border-t border-[#1F1F2E] hover:bg-[#111118] transition-colors"
+                      className="border-t border-app hover:surface transition-colors"
                     >
                       <td className="p-4">
                         <div className="font-medium">{sub.member.fullName}</div>
-                        <div className="text-xs text-[#64748B] font-mono" dir="ltr">
+                        <div className="text-xs text-faint font-mono" dir="ltr">
                           {sub.member.memberNumber}
                         </div>
                       </td>
                       <td className="p-4 text-sm">{sub.plan.name}</td>
-                      <td className="p-4 text-sm text-[#94A3B8]">
+                      <td className="p-4 text-sm text-muted-c">
                         {formatDate(sub.startDate)}
                       </td>
-                      <td className="p-4 text-sm text-[#94A3B8]">
+                      <td className="p-4 text-sm text-muted-c">
                         {formatDate(sub.endDate)}
                       </td>
                       <td className="p-4 font-medium text-[#22C55E]">
@@ -378,7 +378,7 @@ export default function SubscriptionsPage() {
                 </div>
                 <div>
                   <h3 className="font-cairo font-bold text-lg">تجديد الاشتراك</h3>
-                  <p className="text-sm text-[#94A3B8]">
+                  <p className="text-sm text-muted-c">
                     {renewSub.member.fullName} ·{' '}
                     <span className="font-mono" dir="ltr">
                       {renewSub.member.memberNumber}
@@ -388,7 +388,7 @@ export default function SubscriptionsPage() {
               </div>
               <button
                 onClick={closeRenew}
-                className="p-1.5 rounded-lg text-[#64748B] hover:bg-[#1F1F2E]"
+                className="p-1.5 rounded-lg text-faint hover:bg-[#1F1F2E]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -409,7 +409,7 @@ export default function SubscriptionsPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   {/* Plan */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                    <label className="block text-sm font-medium mb-2 text-soft">
                       الخطة *
                     </label>
                     <select
@@ -429,7 +429,7 @@ export default function SubscriptionsPage() {
 
                   {/* Start date */}
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                    <label className="block text-sm font-medium mb-2 text-soft">
                       تاريخ البداية *
                     </label>
                     <input
@@ -446,7 +446,7 @@ export default function SubscriptionsPage() {
 
                   {/* Discount */}
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                    <label className="block text-sm font-medium mb-2 text-soft">
                       الخصم (جنيه)
                     </label>
                     <input
@@ -464,7 +464,7 @@ export default function SubscriptionsPage() {
 
                   {/* Payment method */}
                   <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                    <label className="block text-sm font-medium mb-2 text-soft">
                       طريقة الدفع *
                     </label>
                     <select
@@ -494,21 +494,21 @@ export default function SubscriptionsPage() {
                     : 0
                   const finalPrice = Math.max(0, plan.price - discount)
                   return (
-                    <div className="p-4 bg-[#111118] rounded-xl border border-[#1F1F2E] space-y-2">
+                    <div className="p-4 surface rounded-xl border border-app space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-[#94A3B8]">تاريخ النهاية (مُحتسب)</span>
+                        <span className="text-muted-c">تاريخ النهاية (مُحتسب)</span>
                         <span className="font-medium text-white">
                           {formatDate(end.toISOString())}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-[#94A3B8]">المبلغ المطلوب</span>
+                        <span className="text-sm text-muted-c">المبلغ المطلوب</span>
                         <div className="text-left">
                           <span className="text-lg font-bold font-cairo text-[#22C55E]">
                             {formatCurrency(finalPrice)}
                           </span>
                           {discount > 0 && (
-                            <span className="text-xs text-[#64748B] line-through mr-2">
+                            <span className="text-xs text-faint line-through mr-2">
                               {formatCurrency(plan.price)}
                             </span>
                           )}
@@ -523,7 +523,7 @@ export default function SubscriptionsPage() {
                   <button
                     type="button"
                     onClick={closeRenew}
-                    className="px-5 py-3 border border-[#1F1F2E] text-white rounded-xl font-semibold hover:bg-[#111118] transition-all"
+                    className="px-5 py-3 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
                   >
                     إلغاء
                   </button>
@@ -558,17 +558,17 @@ export default function SubscriptionsPage() {
           <button
             onClick={() => fetchSubs(page - 1, search, statusFilter)}
             disabled={page === 1}
-            className="p-2 rounded-lg border border-[#1F1F2E] disabled:opacity-30 hover:bg-[#111118] transition-colors"
+            className="p-2 rounded-lg border border-app disabled:opacity-30 hover:surface transition-colors"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
-          <span className="px-4 py-2 text-sm text-[#94A3B8]">
+          <span className="px-4 py-2 text-sm text-muted-c">
             صفحة {page} من {totalPages}
           </span>
           <button
             onClick={() => fetchSubs(page + 1, search, statusFilter)}
             disabled={page === totalPages}
-            className="p-2 rounded-lg border border-[#1F1F2E] disabled:opacity-30 hover:bg-[#111118] transition-colors"
+            className="p-2 rounded-lg border border-app disabled:opacity-30 hover:surface transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>

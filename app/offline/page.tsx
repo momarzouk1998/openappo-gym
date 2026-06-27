@@ -13,7 +13,7 @@ export default function OfflinePage() {
           <WifiOff className="w-10 h-10 text-[#22C55E]" />
         </div>
         <h1 className="font-cairo font-bold text-3xl mb-3">أنت غير متصل</h1>
-        <p className="text-[#94A3B8] mb-8">
+        <p className="text-muted-c mb-8">
           مفيش اتصال بالإنترنت دلوقتي. بياناتك المحفوظة لسه متاحة، وهتتزامن
           تلقائياً لما يرجع النت.
         </p>

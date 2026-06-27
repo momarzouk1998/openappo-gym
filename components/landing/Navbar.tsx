@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Menu, X, Dumbbell } from 'lucide-react'
+import { Menu, X, Dumbbell, Sun, Moon } from 'lucide-react'
+import { useTheme } from 'next-themes'
 
 const navLinks = [
   { href: '#features', label: 'المميزات' },
@@ -11,6 +12,23 @@ const navLinks = [
   { href: '#how', label: 'كيف يشتغل' },
   { href: '#contact', label: 'تواصل معنا' },
 ]
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return <span className="w-5 h-5" aria-hidden />
+  const isLight = theme === 'light'
+  return (
+    <button
+      onClick={() => setTheme(isLight ? 'dark' : 'light')}
+      className="text-muted-c hover:text-white transition-colors"
+      aria-label={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
+    >
+      {isLight ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+    </button>
+  )
+}
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -29,7 +47,7 @@ export function Navbar() {
       transition={{ type: 'spring', stiffness: 80, damping: 16 }}
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#0A0A0F]/80 backdrop-blur-lg border-b border-[#1F1F2E]'
+          ? 'bg-app/80 backdrop-blur-lg border-b border-app'
           : 'bg-transparent'
       }`}
     >
@@ -59,7 +77,7 @@ export function Navbar() {
             >
               <Link
                 href={link.href}
-                className="text-sm text-[#94A3B8] hover:text-white transition-colors relative"
+                className="text-sm text-muted-c hover:text-white transition-colors relative"
               >
                 {link.label}
               </Link>
@@ -69,10 +87,11 @@ export function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/login"
-              className="px-4 py-2 text-sm text-[#94A3B8] hover:text-white transition-colors"
+              className="px-4 py-2 text-sm text-muted-c hover:text-white transition-colors"
             >
               تسجيل الدخول
             </Link>
@@ -106,7 +125,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="md:hidden bg-[#0A0A0F]/95 backdrop-blur-lg border-b border-[#1F1F2E] overflow-hidden"
+            className="md:hidden bg-app/95 backdrop-blur-lg border-b border-app overflow-hidden"
           >
             <ul className="px-4 py-4 space-y-2">
               {navLinks.map((link, i) => (
@@ -119,7 +138,7 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="block py-3 px-4 text-[#94A3B8] hover:text-white hover:bg-[#111118] rounded-lg transition-colors"
+                    className="block py-3 px-4 text-muted-c hover:text-white hover:surface rounded-lg transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -129,12 +148,12 @@ export function Navbar() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: navLinks.length * 0.05 }}
-                className="pt-2 border-t border-[#1F1F2E]"
+                className="pt-2 border-t border-app"
               >
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="block py-3 px-4 text-[#94A3B8] hover:text-white hover:bg-[#111118] rounded-lg transition-colors"
+                  className="block py-3 px-4 text-muted-c hover:text-white hover:surface rounded-lg transition-colors"
                 >
                   تسجيل الدخول
                 </Link>

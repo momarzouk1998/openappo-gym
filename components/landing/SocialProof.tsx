@@ -101,17 +101,17 @@ export function SocialProof() {
                 ))}
               </div>
 
-              <p className="text-[#CBD5E1] leading-relaxed mb-6 relative z-10">
+              <p className="text-soft leading-relaxed mb-6 relative z-10">
                 {t.text}
               </p>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-[#1F1F2E]">
+              <div className="flex items-center gap-3 pt-4 border-t border-app">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center text-white font-bold font-cairo">
                   {t.name.charAt(0)}
                 </div>
                 <div>
                   <div className="font-bold">{t.name}</div>
-                  <div className="text-sm text-[#64748B]">
+                  <div className="text-sm text-faint">
                     {t.role} — {t.city}
                   </div>
                 </div>

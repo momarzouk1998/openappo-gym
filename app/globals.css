@@ -1,19 +1,16 @@
 @import "tailwindcss";
 
 /* ========================================
-   CUSTOM THEME & DESIGN TOKENS
+   THEME TOKENS — semantic CSS variables
+   Swapped via the .light class (added to <html> by next-themes).
+   Default (no class) = DARK.
    ======================================== */
 
+/* Brand / accent colors stay constant across themes */
 @theme {
-  --color-primary: #0A0A0F;
-  --color-surface: #111118;
-  --color-surface-2: #1a1a24;
-  --color-border: #1F1F2E;
   --color-accent: #22C55E;
   --color-accent-dark: #16A34A;
   --color-accent-light: #4ADE80;
-  --color-text: #F8FAFC;
-  --color-muted: #64748B;
   --color-danger: #EF4444;
   --color-warning: #F59E0B;
   --color-info: #3B82F6;
@@ -23,24 +20,87 @@
   --font-inter: 'Inter', sans-serif;
 }
 
+/* DARK (default) */
+:root {
+  --bg-app: #0A0A0F;
+  --surface: #111118;
+  --surface-2: #1a1a24;
+  --border-app: #1F1F2E;
+  --text-strong: #F8FAFC;
+  --text-soft: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-faint: #64748B;
+  /* glass-card rgba values */
+  --glass-bg: rgba(17, 17, 24, 0.6);
+  --glass-border: rgba(31, 31, 46, 0.8);
+  --grid-line: rgba(34, 197, 94, 0.03);
+}
+
+/* LIGHT — applied when next-themes sets class="light" on <html> */
+.light {
+  --bg-app: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --border-app: #E2E8F0;
+  --text-strong: #0F172A;
+  --text-soft: #334155;
+  --text-muted: #64748B;
+  --text-faint: #94A3B8;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(226, 232, 240, 0.9);
+  --grid-line: rgba(34, 197, 94, 0.05);
+}
+
+/* ========================================
+   SEMANTIC UTILITY CLASSES
+   These are the refactored targets for the ~600 color literals.
+   Using @utility so Tailwind v4 treats them as real utilities
+   (variant-composable: hover:, etc.).
+   ======================================== */
+
+@utility bg-app {
+  background-color: var(--bg-app);
+}
+@utility surface {
+  background-color: var(--surface);
+}
+@utility surface-2 {
+  background-color: var(--surface-2);
+}
+@utility border-app {
+  border-color: var(--border-app);
+}
+@utility text-strong {
+  color: var(--text-strong);
+}
+@utility text-soft {
+  color: var(--text-soft);
+}
+@utility text-muted-c {
+  color: var(--text-muted);
+}
+@utility text-faint {
+  color: var(--text-faint);
+}
+
 /* ========================================
    BASE STYLES
    ======================================== */
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #1F1F2E #0A0A0F;
+  scrollbar-color: var(--border-app) var(--bg-app);
 }
 
 ::selection {
   background-color: rgba(34, 197, 94, 0.3);
-  color: #F8FAFC;
+  color: var(--text-strong);
 }
 
 body {
   font-family: var(--font-ibm);
-  background-color: var(--color-primary);
-  color: var(--color-text);
+  background-color: var(--bg-app);
+  color: var(--text-strong);
   overflow-x: hidden;
 }
 
@@ -49,9 +109,9 @@ body {
    ======================================== */
 
 .glass-card {
-  background: rgba(17, 17, 24, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(31, 31, 46, 0.8);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
 }
 
@@ -74,8 +134,8 @@ body {
 
 .grid-bg {
   background-image:
-    linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
@@ -179,11 +239,11 @@ textarea {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0A0A0F;
+  background: var(--bg-app);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F1F2E;
+  background: var(--border-app);
   border-radius: 3px;
 }
 

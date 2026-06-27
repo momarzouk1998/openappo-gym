@@ -3,6 +3,7 @@ import { Cairo, IBM_Plex_Sans_Arabic, Inter } from 'next/font/google'
 import './globals.css'
 import { SessionProvider } from '@/components/SessionProvider'
 import { PWARegister } from '@/components/PWARegister'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 const cairo = Cairo({
   subsets: ['arabic', 'latin'],
@@ -100,6 +101,7 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
+      suppressHydrationWarning
       className={`${cairo.variable} ${ibm.variable} ${inter.variable}`}
     >
       <head>
@@ -114,8 +116,10 @@ export default function RootLayout({
           content="black-translucent"
         />
       </head>
-      <body className="min-h-screen bg-[#0A0A0F] text-[#F8FAFC] font-ibm">
-        <SessionProvider>{children}</SessionProvider>
+      <body className="min-h-screen bg-app text-strong font-ibm">
+        <ThemeProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </ThemeProvider>
         <PWARegister />
       </body>
     </html>

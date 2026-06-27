@@ -44,7 +44,7 @@ export function Pricing() {
           <h2 className="font-cairo font-bold text-3xl sm:text-4xl lg:text-5xl mb-4">
             أسعار واضحة — <span className="text-[#22C55E]">مفيش مفاجآت</span>
           </h2>
-          <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto">
+          <p className="text-lg text-muted-c max-w-2xl mx-auto">
             اختر الباقة المناسبة لجيمك. تبدأ تجربة مجانية 14 يوم بدون كريدت كارد.
           </p>
         </motion.div>
@@ -57,7 +57,7 @@ export function Pricing() {
           transition={{ delay: 0.2 }}
           className="flex justify-center mb-12"
         >
-          <div className="inline-flex p-1 bg-[#111118] border border-[#1F1F2E] rounded-xl">
+          <div className="inline-flex p-1 surface border border-app rounded-xl">
             {(['monthly', 'annual'] as const).map((option) => (
               <button
                 key={option}
@@ -71,7 +71,7 @@ export function Pricing() {
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                   />
                 )}
-                <span className={`relative z-10 ${billing === option ? 'text-white' : 'text-[#94A3B8]'}`}>
+                <span className={`relative z-10 ${billing === option ? 'text-white' : 'text-muted-c'}`}>
                   {option === 'monthly' ? 'شهري' : 'سنوي'}
                 </span>
               </button>
@@ -128,7 +128,7 @@ export function Pricing() {
                   >
                     {price.toLocaleString('ar-EG')}
                   </motion.span>
-                  <span className="text-[#64748B] mb-2">
+                  <span className="text-faint mb-2">
                     ج / {billing === 'annual' ? 'سنة' : 'شهر'}
                   </span>
                 </div>
@@ -151,7 +151,7 @@ export function Pricing() {
                       <div className="w-5 h-5 rounded-full bg-[#22C55E]/20 flex items-center justify-center flex-shrink-0">
                         <Check className="w-3 h-3 text-[#22C55E]" />
                       </div>
-                      <span className="text-[#CBD5E1]">{feature}</span>
+                      <span className="text-soft">{feature}</span>
                     </motion.li>
                   ))}
                 </ul>
@@ -161,7 +161,7 @@ export function Pricing() {
                   className={`block text-center mt-8 py-3.5 rounded-xl font-semibold transition-all ${
                     isPopular
                       ? 'bg-[#22C55E] text-white hover:bg-[#16A34A] hover:shadow-lg hover:shadow-[#22C55E]/30'
-                      : 'border border-[#1F1F2E] text-white hover:bg-[#111118]'
+                      : 'border border-app text-white hover:surface'
                   }`}
                 >
                   ابدأ تجربة مجانية 14 يوم
@@ -180,7 +180,7 @@ export function Pricing() {
         >
           <div className="text-center mb-8">
             <h3 className="font-cairo font-bold text-2xl mb-2">إضافات اختيارية</h3>
-            <p className="text-[#94A3B8]">فعّل بس اللي تحتاجه — كل إضافة منفصلة</p>
+            <p className="text-muted-c">فعّل بس اللي تحتاجه — كل إضافة منفصلة</p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {addonList.map((addon, i) => (

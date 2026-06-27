@@ -24,7 +24,7 @@ export function GymSwitcher() {
   if (!gym || gyms.length <= 1) {
     // Show gym name without dropdown if only one gym
     return gym ? (
-      <div className="flex items-center gap-3 p-3 bg-[#111118] rounded-xl">
+      <div className="flex items-center gap-3 p-3 surface rounded-xl">
         <div className="w-10 h-10 rounded-lg bg-[#22C55E]/20 flex items-center justify-center font-bold font-cairo text-[#22C55E]">
           {gym.name.charAt(0)}
         </div>
@@ -46,20 +46,20 @@ export function GymSwitcher() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 p-3 bg-[#111118] rounded-xl hover:bg-[#1a1a25] transition-colors"
+        className="w-full flex items-center gap-3 p-3 surface rounded-xl hover:bg-[#1a1a25] transition-colors"
       >
         <div className="w-10 h-10 rounded-lg bg-[#22C55E]/20 flex items-center justify-center font-bold font-cairo text-[#22C55E] shrink-0">
           {gym.name.charAt(0)}
         </div>
         <div className="min-w-0 flex-1 text-right">
           <div className="font-medium truncate text-sm">{gym.name}</div>
-          <div className="text-xs text-[#64748B]">{gyms.length} جيمات</div>
+          <div className="text-xs text-faint">{gyms.length} جيمات</div>
         </div>
-        <ChevronDown className={`w-4 h-4 text-[#64748B] transition-transform ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-faint transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 left-0 mt-1 bg-[#111118] border border-[#1F1F2E] rounded-xl overflow-hidden z-50 shadow-xl">
+        <div className="absolute top-full right-0 left-0 mt-1 surface border border-app rounded-xl overflow-hidden z-50 shadow-xl">
           {gyms.map((g) => (
             <button
               key={g.id}

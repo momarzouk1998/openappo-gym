@@ -69,7 +69,7 @@ export default function LoginPage() {
           <h1 className="font-cairo font-bold text-2xl text-center mb-2">
             مرحباً بك
           </h1>
-          <p className="text-[#94A3B8] text-center mb-8">
+          <p className="text-muted-c text-center mb-8">
             سجّل دخولك للوحة التحكم
           </p>
 
@@ -81,42 +81,42 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 البريد الإلكتروني
               </label>
               <div className="relative">
-                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+                <Mail className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   dir="ltr"
-                  className="w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-[#64748B] focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
+                  className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 كلمة المرور
               </label>
               <div className="relative">
-                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#64748B]" />
+                <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   dir="ltr"
-                  className="w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 pr-11 pl-11 text-white placeholder:text-[#64748B] focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
+                  className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-11 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-white"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-faint hover:text-white"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -144,7 +144,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-[#94A3B8]">
+            <p className="text-sm text-muted-c">
               ليك حساب جديد؟{' '}
               <Link
                 href="/register"
@@ -156,7 +156,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="text-center mt-6 text-sm text-[#64748B]">
+        <p className="text-center mt-6 text-sm text-faint">
           <Link href="/" className="hover:text-[#22C55E] transition-colors">
             ← العودة للرئيسية
           </Link>

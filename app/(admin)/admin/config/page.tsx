@@ -84,7 +84,7 @@ export default function AdminConfigPage() {
   }
 
   const inputClass =
-    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -94,7 +94,7 @@ export default function AdminConfigPage() {
         </div>
         <div>
           <h2 className="font-cairo font-bold text-2xl">أسعار المنصة</h2>
-          <p className="text-sm text-[#94A3B8]">
+          <p className="text-sm text-muted-c">
             تحكّم في أسعار الخطط والإضافات لكل الجيمات
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function AdminConfigPage() {
           <h3 className="font-cairo font-bold text-lg mb-3">أسعار الباقات</h3>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 Starter (ج/شهر)
               </label>
               <input
@@ -131,7 +131,7 @@ export default function AdminConfigPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 Pro (ج/شهر)
               </label>
               <input
@@ -144,7 +144,7 @@ export default function AdminConfigPage() {
               />
             </div>
           </div>
-          <p className="text-xs text-[#64748B] mt-2">
+          <p className="text-xs text-faint mt-2">
             ⚠️ الأسعار دي بتتطبّق على الجيمات الجديدة. الجيمات الموجودة مش هتتأثر تلقائياً.
           </p>
         </div>
@@ -157,7 +157,7 @@ export default function AdminConfigPage() {
               <div key={addon.key} className="flex items-center gap-3">
                 <div className="flex-1">
                   <div className="font-medium text-sm">{addon.name}</div>
-                  <div className="text-xs text-[#94A3B8]">{addon.description}</div>
+                  <div className="text-xs text-muted-c">{addon.description}</div>
                 </div>
                 <div className="w-32">
                   <div className="relative">
@@ -171,7 +171,7 @@ export default function AdminConfigPage() {
                       }
                       className={`${inputClass} py-2.5 text-left text-sm`}
                     />
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[#64748B]">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-faint">
                       ج
                     </span>
                   </div>

@@ -112,13 +112,13 @@ export default function NewMemberPage() {
   }
 
   const inputClass =
-    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h2 className="font-cairo font-bold text-2xl">إضافة عضو جديد</h2>
-        <p className="text-sm text-[#94A3B8]">أدخل بيانات العضو واشتراكه</p>
+        <p className="text-sm text-muted-c">أدخل بيانات العضو واشتراكه</p>
       </div>
 
       {error && (
@@ -139,7 +139,7 @@ export default function NewMemberPage() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 الاسم الكامل *
               </label>
               <input
@@ -152,7 +152,7 @@ export default function NewMemberPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 رقم التليفون *
               </label>
               <input
@@ -166,7 +166,7 @@ export default function NewMemberPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+              <label className="block text-sm font-medium mb-2 text-soft">
                 الجنس
               </label>
               <select
@@ -200,20 +200,20 @@ export default function NewMemberPage() {
                 }
                 className="w-4 h-4 accent-[#22C55E]"
               />
-              <span className="text-sm text-[#94A3B8]">تفعيل الاشتراك دلوقتي</span>
+              <span className="text-sm text-muted-c">تفعيل الاشتراك دلوقتي</span>
             </label>
           </div>
 
           {form.createSubscription && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                <label className="block text-sm font-medium mb-2 text-soft">
                   نوع الاشتراك *
                 </label>
                 {plansLoading ? (
                   <div className={`${inputClass} flex items-center gap-2`}>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#64748B]" />
-                    <span className="text-[#64748B]">جاري تحميل الخطط...</span>
+                    <Loader2 className="w-4 h-4 animate-spin text-faint" />
+                    <span className="text-faint">جاري تحميل الخطط...</span>
                   </div>
                 ) : plans.length === 0 ? (
                   <div className={`${inputClass} text-[#F59E0B]`}>
@@ -236,7 +236,7 @@ export default function NewMemberPage() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                <label className="block text-sm font-medium mb-2 text-soft">
                   تاريخ البداية *
                 </label>
                 <input
@@ -249,7 +249,7 @@ export default function NewMemberPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                <label className="block text-sm font-medium mb-2 text-soft">
                   الخصم (جنيه)
                 </label>
                 <input
@@ -263,7 +263,7 @@ export default function NewMemberPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">
+                <label className="block text-sm font-medium mb-2 text-soft">
                   طريقة الدفع *
                 </label>
                 <select
@@ -280,15 +280,15 @@ export default function NewMemberPage() {
 
               {/* Price summary */}
               {selectedPlan && (
-                <div className="md:col-span-2 p-4 bg-[#111118] rounded-xl border border-[#1F1F2E]">
+                <div className="md:col-span-2 p-4 surface rounded-xl border border-app">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-[#94A3B8]">المبلغ المطلوب</span>
+                    <span className="text-sm text-muted-c">المبلغ المطلوب</span>
                     <div className="text-left">
                       <span className="text-lg font-bold font-cairo text-[#22C55E]">
                         {formatCurrency(finalPrice)}
                       </span>
                       {discount > 0 && (
-                        <span className="text-xs text-[#64748B] line-through mr-2">
+                        <span className="text-xs text-faint line-through mr-2">
                           {formatCurrency(selectedPlan.price)}
                         </span>
                       )}
@@ -305,7 +305,7 @@ export default function NewMemberPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-3.5 border border-[#1F1F2E] text-white rounded-xl font-semibold hover:bg-[#111118] transition-all"
+            className="px-6 py-3.5 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
           >
             <ArrowRight className="w-5 h-5" />
           </button>

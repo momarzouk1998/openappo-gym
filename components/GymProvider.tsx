@@ -53,7 +53,7 @@ export function GymProvider({ children }: GymProviderProps) {
   // Show loading while initializing (but not if we already have data)
   if (!initialized && status === 'authenticated') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0F]">
+      <div className="min-h-screen flex items-center justify-center bg-app">
         <Loader2 className="w-8 h-8 animate-spin text-[#22C55E]" />
       </div>
     )

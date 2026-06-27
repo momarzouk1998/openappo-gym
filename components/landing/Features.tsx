@@ -102,7 +102,7 @@ export function Features() {
           <h2 className="font-cairo font-bold text-3xl sm:text-4xl lg:text-5xl mb-4">
             كل اللي <span className="text-[#22C55E]">جيمك محتاجه</span>
           </h2>
-          <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto">
+          <p className="text-lg text-muted-c max-w-2xl mx-auto">
             نظام واحد فيه كل أدوات إدارة الجيم. من الأعضاء والاشتراكات للتقارير
             والمصروفات.
           </p>
@@ -131,7 +131,7 @@ export function Features() {
                 <feature.icon className={`w-7 h-7 ${feature.color}`} />
               </motion.div>
               <h3 className="font-cairo font-bold text-xl mb-3">{feature.title}</h3>
-              <p className="text-[#94A3B8] leading-relaxed">{feature.desc}</p>
+              <p className="text-muted-c leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}
         </motion.div>

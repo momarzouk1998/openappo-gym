@@ -142,7 +142,7 @@ export function Hero() {
             {/* Subheading */}
             <motion.p
               variants={itemVariants}
-              className="text-lg sm:text-xl text-[#94A3B8] mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-lg sm:text-xl text-muted-c mb-8 max-w-xl mx-auto lg:mx-0"
             >
               اشتراكات، مدفوعات، تقارير، موظفين — كل حاجة في مكان واحد. منصة
               متكاملة لصاحب الجيم الحديث.
@@ -165,7 +165,7 @@ export function Hero() {
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="#how"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-[#1F1F2E] text-white rounded-xl font-semibold hover:bg-[#111118] transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
                 >
                   <Play className="w-4 h-4" />
                   شوف كيف يشتغل
@@ -176,7 +176,7 @@ export function Hero() {
             {/* Trust line */}
             <motion.p
               variants={itemVariants}
-              className="mt-6 text-sm text-[#64748B]"
+              className="mt-6 text-sm text-faint"
             >
               مفيش كريدت كارد مطلوب • إلغاء في أي وقت
             </motion.p>
@@ -203,7 +203,7 @@ export function Hero() {
               className="glass-card glow-green p-6 rounded-2xl relative z-10"
             >
               {/* Mock header */}
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#1F1F2E]">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-app">
                 <div className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: [0, -8, 8, 0] }}
@@ -214,7 +214,7 @@ export function Hero() {
                   </motion.div>
                   <span className="font-medium text-sm">جيم القوة</span>
                 </div>
-                <span className="text-xs text-[#64748B]">لوحة التحكم</span>
+                <span className="text-xs text-faint">لوحة التحكم</span>
               </div>
 
               {/* Mock stats */}
@@ -228,14 +228,14 @@ export function Hero() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + i * 0.15 }}
-                    className="bg-[#111118] rounded-xl p-4 border border-[#1F1F2E]"
+                    className="surface rounded-xl p-4 border border-app"
                   >
                     <div className="flex items-center justify-between mb-2">
                       <stat.icon className="w-4 h-4 text-[#22C55E]" />
-                      <span className="text-xs text-[#64748B]">{stat.badge}</span>
+                      <span className="text-xs text-faint">{stat.badge}</span>
                     </div>
                     <div className="text-2xl font-bold font-cairo">{stat.value}</div>
-                    <div className="text-xs text-[#64748B]">{stat.label}</div>
+                    <div className="text-xs text-faint">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -245,7 +245,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.1 }}
-                className="bg-[#111118] rounded-xl p-4 border border-[#1F1F2E]"
+                className="surface rounded-xl p-4 border border-app"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -297,7 +297,7 @@ export function Hero() {
               <div className="text-3xl sm:text-4xl font-bold font-cairo text-white">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </div>
-              <div className="text-sm text-[#64748B] mt-1">{stat.label}</div>
+              <div className="text-sm text-faint mt-1">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -310,7 +310,7 @@ export function Hero() {
         transition={{ delay: 2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
       >
-        <span className="text-xs text-[#64748B]">اكتشف المزيد</span>
+        <span className="text-xs text-faint">اكتشف المزيد</span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}

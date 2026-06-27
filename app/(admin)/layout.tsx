@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -13,8 +13,11 @@ import {
   X,
   Bell,
   Settings2,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
+import { useTheme } from 'next-themes'
 
 const adminNav = [
   { href: '/admin', label: 'الرئيسية', icon: LayoutDashboard },
@@ -22,6 +25,24 @@ const adminNav = [
   { href: '/admin/config', label: 'الأسعار', icon: Settings2 },
   { href: '/admin/billing', label: 'الفواتير', icon: Receipt },
 ]
+
+function AdminThemeToggle() {
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return <span className="w-9 h-9" aria-hidden />
+  const isLight = theme === 'light'
+  return (
+    <button
+      onClick={() => setTheme(isLight ? 'dark' : 'light')}
+      className="p-2 text-muted-c hover:text-white transition-colors rounded-lg hover:surface"
+      aria-label={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
+      title={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
+    >
+      {isLight ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+    </button>
+  )
+}
 
 export default function AdminLayout({
   children,
@@ -35,7 +56,7 @@ export default function AdminLayout({
     href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
 
   return (
-    <div className="min-h-screen bg-[#0A0A0F]">
+    <div className="min-h-screen bg-app">
       <div className="flex">
         {/* Mobile overlay */}
         {open && (
@@ -47,11 +68,11 @@ export default function AdminLayout({
 
         {/* Sidebar */}
         <aside
-          className={`fixed lg:sticky top-0 right-0 h-screen w-72 bg-[#0A0A0F] border-l border-[#1F1F2E] z-50 transition-transform duration-300 flex flex-col ${
+          className={`fixed lg:sticky top-0 right-0 h-screen w-72 bg-app border-l border-app z-50 transition-transform duration-300 flex flex-col ${
             open ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
           }`}
         >
-          <div className="p-5 border-b border-[#1F1F2E]">
+          <div className="p-5 border-b border-app">
             <Link href="/admin" className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center">
                 <Dumbbell className="w-5 h-5 text-white" />
@@ -65,7 +86,7 @@ export default function AdminLayout({
             </Link>
             <button
               onClick={() => setOpen(false)}
-              className="lg:hidden absolute top-5 left-5 text-[#94A3B8]"
+              className="lg:hidden absolute top-5 left-5 text-muted-c"
             >
               <X className="w-5 h-5" />
             </button>
@@ -80,7 +101,7 @@ export default function AdminLayout({
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   isActive(item.href)
                     ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                    : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+                    : 'text-muted-c hover:surface hover:text-white'
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -89,7 +110,7 @@ export default function AdminLayout({
             ))}
           </nav>
 
-          <div className="p-4 border-t border-[#1F1F2E]">
+          <div className="p-4 border-t border-app">
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all"
@@ -102,7 +123,7 @@ export default function AdminLayout({
 
         {/* Main */}
         <div className="flex-1 min-w-0">
-          <header className="sticky top-0 z-30 bg-[#0A0A0F]/80 backdrop-blur-lg border-b border-[#1F1F2E]">
+          <header className="sticky top-0 z-30 bg-app/80 backdrop-blur-lg border-b border-app">
             <div className="px-4 sm:px-6 h-16 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
@@ -116,7 +137,8 @@ export default function AdminLayout({
                 </h1>
               </div>
               <div className="flex items-center gap-3">
-                <button className="relative p-2 text-[#94A3B8] hover:text-white">
+                <AdminThemeToggle />
+                <button className="relative p-2 text-muted-c hover:text-white">
                   <Bell className="w-5 h-5" />
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
                 </button>

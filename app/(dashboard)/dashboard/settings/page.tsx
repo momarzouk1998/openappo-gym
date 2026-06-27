@@ -202,13 +202,13 @@ export default function SettingsPage() {
   }
 
   const inputClass =
-    'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
         <h2 className="font-cairo font-bold text-2xl">الإعدادات</h2>
-        <p className="text-sm text-[#94A3B8]">إدارة بيانات جيمك وحسابك</p>
+        <p className="text-sm text-muted-c">إدارة بيانات جيمك وحسابك</p>
       </div>
 
       {/* Gym Info */}
@@ -233,7 +233,7 @@ export default function SettingsPage() {
         )}
 
         <div>
-          <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">اسم الجيم</label>
+          <label className="block text-sm font-medium mb-2 text-soft">اسم الجيم</label>
           <input
             type="text"
             required
@@ -244,7 +244,7 @@ export default function SettingsPage() {
         </div>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">التليفون</label>
+            <label className="block text-sm font-medium mb-2 text-soft">التليفون</label>
             <input
               type="tel"
               dir="ltr"
@@ -255,7 +255,7 @@ export default function SettingsPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">المدينة</label>
+            <label className="block text-sm font-medium mb-2 text-soft">المدينة</label>
             <input
               type="text"
               value={form.city}
@@ -266,7 +266,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2 text-[#CBD5E1]">العنوان</label>
+          <label className="block text-sm font-medium mb-2 text-soft">العنوان</label>
           <input
             type="text"
             value={form.address}
@@ -304,16 +304,16 @@ export default function SettingsPage() {
         {/* Existing plans */}
         <div className="space-y-2">
           {plans.length === 0 ? (
-            <p className="text-sm text-[#64748B]">مفيش خطط بعد</p>
+            <p className="text-sm text-faint">مفيش خطط بعد</p>
           ) : (
             plans.map((plan) => (
               <div
                 key={plan.id}
-                className="flex items-center justify-between p-3 bg-[#111118] rounded-xl"
+                className="flex items-center justify-between p-3 surface rounded-xl"
               >
                 <div>
                   <div className="font-medium text-sm">{plan.name}</div>
-                  <div className="text-xs text-[#64748B]">
+                  <div className="text-xs text-faint">
                     {plan.duration} يوم — {formatCurrency(plan.price)}
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Add plan form */}
-        <form onSubmit={handleAddPlan} className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#1F1F2E]">
+        <form onSubmit={handleAddPlan} className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-app">
           <input
             type="text"
             required
@@ -380,7 +380,7 @@ export default function SettingsPage() {
           </div>
           <div>
             <h3 className="font-cairo font-bold text-lg">الباقة والإضافات</h3>
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-faint">
               غيّر باقتك أو فعّل/ألغِ الإضافات الإضافية
             </p>
           </div>
@@ -410,14 +410,14 @@ export default function SettingsPage() {
                 className={`p-4 rounded-xl border-2 text-right transition-all ${
                   active
                     ? 'border-[#22C55E] bg-[#22C55E]/5'
-                    : 'border-[#1F1F2E] hover:border-[#22C55E]/30'
+                    : 'border-app hover:border-[#22C55E]/30'
                 }`}
               >
                 <div className="font-cairo font-bold text-lg mb-0.5">{plan.name}</div>
-                <div className="text-xs text-[#94A3B8] mb-2">{plan.desc}</div>
+                <div className="text-xs text-muted-c mb-2">{plan.desc}</div>
                 <div className="text-2xl font-bold text-[#22C55E]">
                   {plan.price}
-                  <span className="text-xs text-[#64748B] font-normal"> ج/شهر</span>
+                  <span className="text-xs text-faint font-normal"> ج/شهر</span>
                 </div>
               </button>
             )
@@ -426,7 +426,7 @@ export default function SettingsPage() {
 
         {/* Addons */}
         <div>
-          <p className="text-sm font-medium mb-3 text-[#CBD5E1]">الإضافات</p>
+          <p className="text-sm font-medium mb-3 text-soft">الإضافات</p>
           <div className="space-y-2">
             {Object.values(ADDONS).map((addon) => {
               const active = selectedAddons.includes(addon.key)
@@ -436,7 +436,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                     active
                       ? 'border-[#22C55E]/40 bg-[#22C55E]/5'
-                      : 'border-[#1F1F2E] hover:border-[#22C55E]/20'
+                      : 'border-app hover:border-[#22C55E]/20'
                   }`}
                 >
                   <input
@@ -447,7 +447,7 @@ export default function SettingsPage() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm">{addon.name}</div>
-                    <div className="text-xs text-[#94A3B8]">{addon.description}</div>
+                    <div className="text-xs text-muted-c">{addon.description}</div>
                   </div>
                   <span className="text-sm font-bold text-[#22C55E] whitespace-nowrap">
                     +{addon.price} ج
@@ -466,19 +466,19 @@ export default function SettingsPage() {
           )
           const total = selectedPrice + addonsTotal
           return (
-            <div className="p-4 bg-[#111118] rounded-xl border border-[#1F1F2E] space-y-2">
+            <div className="p-4 surface rounded-xl border border-app space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">الباقة</span>
+                <span className="text-muted-c">الباقة</span>
                 <span>
                   {PLANS.find((p) => p.price === selectedPrice)?.name} —{' '}
                   {formatCurrency(selectedPrice)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-[#94A3B8]">الإضافات ({selectedAddons.length})</span>
+                <span className="text-muted-c">الإضافات ({selectedAddons.length})</span>
                 <span>{formatCurrency(addonsTotal)}</span>
               </div>
-              <div className="pt-2 border-t border-[#1F1F2E] flex justify-between font-bold">
+              <div className="pt-2 border-t border-app flex justify-between font-bold">
                 <span>الإجمالي شهرياً</span>
                 <span className="text-[#22C55E]">{formatCurrency(total)}</span>
               </div>
@@ -487,8 +487,8 @@ export default function SettingsPage() {
         })()}
 
         {/* Payment note */}
-        <div className="p-3 bg-[#111118]/50 rounded-xl border border-[#1F1F2E]">
-          <p className="text-xs text-[#94A3B8]">
+        <div className="p-3 surface/50 rounded-xl border border-app">
+          <p className="text-xs text-muted-c">
             للحصول على الإضافات أو تغيير الباقة، تواصل معنا على:{' '}
             <span className="font-bold text-[#22C55E]" dir="ltr">
               01558282760

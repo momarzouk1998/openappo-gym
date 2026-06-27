@@ -99,12 +99,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed lg:sticky top-0 right-0 h-screen w-72 bg-[#0A0A0F] border-l border-[#1F1F2E] z-50 transition-transform duration-300 flex flex-col ${
+        className={`fixed lg:sticky top-0 right-0 h-screen w-72 bg-app border-l border-app z-50 transition-transform duration-300 flex flex-col ${
           isOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'
         }`}
       >
         {/* Header */}
-        <div className="p-5 border-b border-[#1F1F2E]">
+        <div className="p-5 border-b border-app">
           <div className="flex items-center justify-between mb-4">
             <Link href="/dashboard" className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-xl bg-[#22C55E] flex items-center justify-center">
@@ -116,7 +116,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </Link>
             <button
               onClick={onClose}
-              className="lg:hidden text-[#94A3B8] hover:text-white"
+              className="lg:hidden text-muted-c hover:text-white"
             >
               <X className="w-5 h-5" />
             </button>
@@ -136,7 +136,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                 isActive(item.href)
                   ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                  : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+                  : 'text-muted-c hover:surface hover:text-white'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -148,7 +148,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           {activeAddons.length > 0 && (
             <>
               <div className="pt-4 pb-2 px-4">
-                <span className="text-xs text-[#64748B] uppercase">
+                <span className="text-xs text-faint uppercase">
                   الإضافات
                 </span>
               </div>
@@ -160,7 +160,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive(item.href)
                       ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                      : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+                      : 'text-muted-c hover:surface hover:text-white'
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -177,7 +177,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive('/dashboard/reports')
                 ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+                : 'text-muted-c hover:surface hover:text-white'
             }`}
           >
             <BarChart3 className="w-5 h-5" />
@@ -191,7 +191,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive('/dashboard/profile')
                 ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+                : 'text-muted-c hover:surface hover:text-white'
             }`}
           >
             <UserCircle className="w-5 h-5" />
@@ -205,7 +205,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive('/dashboard/settings')
                 ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                : 'text-[#94A3B8] hover:bg-[#111118] hover:text-white'
+                : 'text-muted-c hover:surface hover:text-white'
             }`}
           >
             <Settings className="w-5 h-5" />
@@ -214,14 +214,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* User info + Logout */}
-        <div className="p-4 border-t border-[#1F1F2E]">
+        <div className="p-4 border-t border-app">
           <div className="flex items-center gap-3 px-4 py-3 mb-2">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center text-white font-bold text-sm font-cairo">
               {userInitial}
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-medium text-sm truncate">{userName}</div>
-              <div className="text-xs text-[#64748B]">{userRole === 'gym_owner' ? 'مالك' : userRole}</div>
+              <div className="text-xs text-faint">{userRole === 'gym_owner' ? 'مالك' : userRole}</div>
             </div>
           </div>
           <button
