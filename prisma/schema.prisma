@@ -462,3 +462,18 @@ model PlatformConfig {
 
   @@map("platform_config")
 }
+
+// ========================================
+// PASSWORD RESET TOKENS
+// ========================================
+model PasswordReset {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique // bcrypt-hashed, never stored in plaintext
+  expires   DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@map("password_resets")
+}
