@@ -11,14 +11,15 @@ import {
   Dumbbell,
   Menu,
   X,
-  Bell,
   Settings2,
   Sun,
   Moon,
   CalendarClock,
+  UserCircle,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { useTheme } from 'next-themes'
+import { NotificationBell } from '@/components/dashboard/NotificationBell'
 
 const adminNav = [
   { href: '/admin', label: 'الرئيسية', icon: LayoutDashboard },
@@ -26,6 +27,7 @@ const adminNav = [
   { href: '/admin/expiring', label: 'التجديدات', icon: CalendarClock },
   { href: '/admin/config', label: 'الأسعار', icon: Settings2 },
   { href: '/admin/billing', label: 'الفواتير', icon: Receipt },
+  { href: '/admin/profile', label: 'الصفحة الشخصية', icon: UserCircle },
 ]
 
 function AdminThemeToggle() {
@@ -140,10 +142,7 @@ export default function AdminLayout({
               </div>
               <div className="flex items-center gap-3">
                 <AdminThemeToggle />
-                <button className="relative p-2 text-muted-c hover:text-strong">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
-                </button>
+                <NotificationBell />
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center text-white font-bold text-sm">
                   م
                 </div>

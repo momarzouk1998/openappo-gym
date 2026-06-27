@@ -1,8 +1,9 @@
 'use client'
 
-import { Menu, Bell, Sun, Moon } from 'lucide-react'
+import { Menu, Sun, Moon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { NotificationBell } from '@/components/dashboard/NotificationBell'
 
 interface HeaderProps {
   title: string
@@ -50,13 +51,7 @@ export function Header({ title, onMenuClick }: HeaderProps) {
         <div className="flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
 
-          <button
-            className="relative p-2 text-muted-c hover:text-strong transition-colors"
-            aria-label="الإشعارات"
-          >
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
-          </button>
+          <NotificationBell />
 
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center text-white font-bold text-sm font-cairo">
             م

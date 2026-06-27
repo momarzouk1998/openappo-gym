@@ -500,9 +500,29 @@ export async function getReports(gymId: string, months = 6): Promise<ReportsData
 // EXPENSES
 // ========================================
 
-export async function getExpenses(gymId: string, page = 1, pageSize = 20) {
-  const where = { gymId }
-  const [expenses, total, monthAgg] = await Promise.all([
+export interface ExpenseFilters {
+  search?: string
+  category?: string
+  page?: number
+  pageSize?: number
+}
+
+export async function getExpenses(gymId: string, filters: ExpenseFilters = {}) {
+  const { search, category, page = 1, pageSize = 20 } = filters
+  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+
+  const where: Prisma.ExpenseWhereInput = {
+    gymId,
+    ...(category && { category }),
+    ...(search && {
+      OR: [
+        { description: { contains: search, mode: 'insensitive' } },
+        { category: { contains: search, mode: 'insensitive' } },
+      ],
+    }),
+  }
+
+  const [expenses, total, monthAgg, allTimeAgg] = await Promise.all([
     prisma.expense.findMany({
       where,
       orderBy: { date: 'desc' },
@@ -511,10 +531,11 @@ export async function getExpenses(gymId: string, page = 1, pageSize = 20) {
     }),
     prisma.expense.count({ where }),
     prisma.expense.aggregate({
-      where: {
-        gymId,
-        date: { gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) },
-      },
+      where: { gymId, date: { gte: startOfMonth } },
+      _sum: { amount: true },
+    }),
+    prisma.expense.aggregate({
+      where: { gymId },
       _sum: { amount: true },
     }),
   ])
@@ -525,6 +546,184 @@ export async function getExpenses(gymId: string, page = 1, pageSize = 20) {
     page,
     pageSize,
     totalPages: Math.ceil(total / pageSize),
-    monthTotal: monthAgg._sum.amount || 0,
+    stats: {
+      monthTotal: monthAgg._sum.amount || 0,
+      allTimeTotal: allTimeAgg._sum.amount || 0,
+    },
   }
+}
+
+// ========================================
+// BRANCHES
+// ========================================
+
+export async function getBranches(gymId: string) {
+  const branches = await prisma.branch.findMany({
+    where: { gymId },
+    orderBy: [{ isMain: 'desc' }, { name: 'asc' }],
+    include: {
+      _count: {
+        select: { members: true, profiles: true, classes: true },
+      },
+    },
+  })
+
+  const total = branches.length
+  const totalMembers = branches.reduce((sum, b) => sum + b._count.members, 0)
+
+  return { branches, total, totalMembers }
+}
+
+// ========================================
+// STAFF (Profiles with gym_manager role)
+// ========================================
+
+export interface StaffFilters {
+  search?: string
+  page?: number
+  pageSize?: number
+}
+
+export async function getStaff(gymId: string, filters: StaffFilters = {}) {
+  const { search, page = 1, pageSize = 20 } = filters
+
+  const where: Prisma.ProfileWhereInput = {
+    gymId,
+    role: 'gym_manager',
+    isActive: true,
+    ...(search && {
+      OR: [
+        { fullName: { contains: search, mode: 'insensitive' } },
+        { phone: { contains: search } },
+      ],
+    }),
+  }
+
+  const [staff, total] = await Promise.all([
+    prisma.profile.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.profile.count({ where }),
+  ])
+
+  return {
+    staff,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+  }
+}
+
+// ========================================
+// TRAINERS (Profiles with trainer role)
+// ========================================
+
+export interface TrainerFilters {
+  search?: string
+  page?: number
+  pageSize?: number
+}
+
+export async function getTrainers(gymId: string, filters: TrainerFilters = {}) {
+  const { search, page = 1, pageSize = 20 } = filters
+
+  const where: Prisma.ProfileWhereInput = {
+    gymId,
+    role: 'trainer',
+    isActive: true,
+    ...(search && {
+      OR: [
+        { fullName: { contains: search, mode: 'insensitive' } },
+        { phone: { contains: search } },
+      ],
+    }),
+  }
+
+  const [trainers, total, totalClasses, totalMembers] = await Promise.all([
+    prisma.profile.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.profile.count({ where }),
+    prisma.classRoom.count({ where: { gymId, trainerId: { not: null } } }),
+    prisma.member.count({ where: { gymId, trainerId: { not: null } } }),
+  ])
+
+  return {
+    trainers,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+    stats: { totalClasses, totalMembers },
+  }
+}
+
+// ========================================
+// CLASSES
+// ========================================
+
+export interface ClassFilters {
+  search?: string
+  active?: boolean
+  page?: number
+  pageSize?: number
+}
+
+export async function getClasses(gymId: string, filters: ClassFilters = {}) {
+  const { search, active, page = 1, pageSize = 20 } = filters
+
+  const where: Prisma.ClassRoomWhereInput = {
+    gymId,
+    ...(active !== undefined && { isActive: active }),
+    ...(search && {
+      OR: [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ],
+    }),
+  }
+
+  const [classes, total, activeCount] = await Promise.all([
+    prisma.classRoom.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        trainer: { select: { id: true, fullName: true } },
+        branch: { select: { id: true, name: true } },
+        _count: { select: { bookings: true } },
+      },
+    }),
+    prisma.classRoom.count({ where }),
+    prisma.classRoom.count({ where: { gymId, isActive: true } }),
+  ])
+
+  return {
+    classes,
+    total,
+    page,
+    pageSize,
+    totalPages: Math.ceil(total / pageSize),
+    stats: { activeCount },
+  }
+}
+
+export async function getClassBookings(classId: string, gymId: string) {
+  const bookings = await prisma.classBooking.findMany({
+    where: { classId, gymId },
+    orderBy: { bookedAt: 'desc' },
+    include: {
+      member: { select: { id: true, fullName: true, phone: true } },
+    },
+    take: 50,
+  })
+  return bookings
 }
