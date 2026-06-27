@@ -6,7 +6,7 @@ import { authConfig } from './auth.config'
 const { auth } = NextAuth(authConfig)
 
 // Public routes that don't require authentication
-const publicRoutes = ['/', '/login', '/register', '/offline']
+const publicRoutes = ['/', '/login', '/register', '/forgot-password', '/reset-password', '/offline']
 
 export default auth((req) => {
   const { pathname } = req.nextUrl
