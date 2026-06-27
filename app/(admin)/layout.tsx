@@ -35,7 +35,7 @@ function AdminThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isLight ? 'dark' : 'light')}
-      className="p-2 text-muted-c hover:text-white transition-colors rounded-lg hover:surface"
+      className="p-2 text-muted-c hover:text-strong transition-colors rounded-lg hover:surface"
       aria-label={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
       title={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
     >
@@ -101,7 +101,7 @@ export default function AdminLayout({
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   isActive(item.href)
                     ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                    : 'text-muted-c hover:surface hover:text-white'
+                    : 'text-muted-c hover:surface hover:text-strong'
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -128,7 +128,7 @@ export default function AdminLayout({
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setOpen(true)}
-                  className="lg:hidden p-2 -mr-2 text-white"
+                  className="lg:hidden p-2 -mr-2 text-strong"
                 >
                   <Menu className="w-6 h-6" />
                 </button>
@@ -138,7 +138,7 @@ export default function AdminLayout({
               </div>
               <div className="flex items-center gap-3">
                 <AdminThemeToggle />
-                <button className="relative p-2 text-muted-c hover:text-white">
+                <button className="relative p-2 text-muted-c hover:text-strong">
                   <Bell className="w-5 h-5" />
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#22C55E] rounded-full" />
                 </button>

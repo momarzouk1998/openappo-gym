@@ -207,7 +207,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.gymName}
                     onChange={(e) => updateField('gymName', e.target.value)}
-                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
+                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
                     placeholder="مثال: جيم القوة"
                   />
                 </div>
@@ -222,7 +222,7 @@ export default function RegisterPage() {
                       value={formData.gymPhone}
                       onChange={(e) => updateField('gymPhone', e.target.value)}
                       dir="ltr"
-                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
+                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
                       placeholder="01012345678"
                     />
                   </div>
@@ -234,7 +234,7 @@ export default function RegisterPage() {
                       type="text"
                       value={formData.city}
                       onChange={(e) => updateField('city', e.target.value)}
-                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
+                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
                       placeholder="القاهرة"
                     />
                   </div>
@@ -248,7 +248,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.address}
                     onChange={(e) => updateField('address', e.target.value)}
-                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
+                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
                     placeholder="شارع التحرير، وسط البلد"
                   />
                 </div>
@@ -288,7 +288,7 @@ export default function RegisterPage() {
                     type="text"
                     value={formData.ownerName}
                     onChange={(e) => updateField('ownerName', e.target.value)}
-                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
+                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
                     placeholder="أحمد محمد"
                   />
                 </div>
@@ -303,7 +303,7 @@ export default function RegisterPage() {
                       value={formData.ownerEmail}
                       onChange={(e) => updateField('ownerEmail', e.target.value)}
                       dir="ltr"
-                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
+                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
                       placeholder="you@example.com"
                     />
                   </div>
@@ -316,7 +316,7 @@ export default function RegisterPage() {
                       value={formData.ownerPhone}
                       onChange={(e) => updateField('ownerPhone', e.target.value)}
                       dir="ltr"
-                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
+                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
                       placeholder="01012345678"
                     />
                   </div>
@@ -331,7 +331,7 @@ export default function RegisterPage() {
                     value={formData.ownerPassword}
                     onChange={(e) => updateField('ownerPassword', e.target.value)}
                     dir="ltr"
-                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
+                    className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
                     placeholder="6 حروف على الأقل"
                   />
                 </div>
@@ -340,7 +340,7 @@ export default function RegisterPage() {
               <div className="flex gap-3 mt-8">
                 <button
                   onClick={prevStep}
-                  className="px-6 py-3.5 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
+                  className="px-6 py-3.5 border border-app text-strong rounded-xl font-semibold hover:surface transition-all"
                 >
                   <ArrowRight className="w-5 h-5" />
                 </button>
@@ -456,7 +456,7 @@ export default function RegisterPage() {
               <div className="flex gap-3">
                 <button
                   onClick={prevStep}
-                  className="px-6 py-3.5 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
+                  className="px-6 py-3.5 border border-app text-strong rounded-xl font-semibold hover:surface transition-all"
                 >
                   <ArrowRight className="w-5 h-5" />
                 </button>

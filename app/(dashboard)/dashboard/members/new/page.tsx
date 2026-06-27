@@ -112,7 +112,7 @@ export default function NewMemberPage() {
   }
 
   const inputClass =
-    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-strong focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -305,7 +305,7 @@ export default function NewMemberPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-6 py-3.5 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
+            className="px-6 py-3.5 border border-app text-strong rounded-xl font-semibold hover:surface transition-all"
           >
             <ArrowRight className="w-5 h-5" />
           </button>

@@ -116,7 +116,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </Link>
             <button
               onClick={onClose}
-              className="lg:hidden text-muted-c hover:text-white"
+              className="lg:hidden text-muted-c hover:text-strong"
             >
               <X className="w-5 h-5" />
             </button>
@@ -136,7 +136,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                 isActive(item.href)
                   ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                  : 'text-muted-c hover:surface hover:text-white'
+                  : 'text-muted-c hover:surface hover:text-strong'
               }`}
             >
               <item.icon className="w-5 h-5" />
@@ -160,7 +160,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive(item.href)
                       ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                      : 'text-muted-c hover:surface hover:text-white'
+                      : 'text-muted-c hover:surface hover:text-strong'
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -177,7 +177,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive('/dashboard/reports')
                 ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                : 'text-muted-c hover:surface hover:text-white'
+                : 'text-muted-c hover:surface hover:text-strong'
             }`}
           >
             <BarChart3 className="w-5 h-5" />
@@ -191,7 +191,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive('/dashboard/profile')
                 ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                : 'text-muted-c hover:surface hover:text-white'
+                : 'text-muted-c hover:surface hover:text-strong'
             }`}
           >
             <UserCircle className="w-5 h-5" />
@@ -205,7 +205,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
               isActive('/dashboard/settings')
                 ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
-                : 'text-muted-c hover:surface hover:text-white'
+                : 'text-muted-c hover:surface hover:text-strong'
             }`}
           >
             <Settings className="w-5 h-5" />

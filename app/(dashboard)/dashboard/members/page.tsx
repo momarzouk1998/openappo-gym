@@ -125,13 +125,13 @@ export default function MembersPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ابحث بالاسم أو التليفون أو رقم العضوية..."
-              className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
+              className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
+            className="bg-app border border-app rounded-xl py-3 px-4 text-strong focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
           >
             <option value="">كل الحالات</option>
             <option value="active">نشط</option>

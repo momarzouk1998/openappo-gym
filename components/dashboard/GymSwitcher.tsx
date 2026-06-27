@@ -46,7 +46,7 @@ export function GymSwitcher() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 p-3 surface rounded-xl hover:bg-[#1a1a25] transition-colors"
+        className="w-full flex items-center gap-3 p-3 surface rounded-xl hover:surface-2 transition-colors"
       >
         <div className="w-10 h-10 rounded-lg bg-[#22C55E]/20 flex items-center justify-center font-bold font-cairo text-[#22C55E] shrink-0">
           {gym.name.charAt(0)}
@@ -64,7 +64,7 @@ export function GymSwitcher() {
             <button
               key={g.id}
               onClick={() => handleSwitch(g)}
-              className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#1a1a25] transition-colors"
+              className="w-full flex items-center gap-3 px-3 py-2.5 hover:surface-2 transition-colors"
             >
               <div className="w-8 h-8 rounded-lg bg-[#22C55E]/10 flex items-center justify-center shrink-0">
                 <Building2 className="w-4 h-4 text-[#22C55E]" />

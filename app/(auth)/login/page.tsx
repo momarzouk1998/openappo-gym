@@ -92,7 +92,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   dir="ltr"
-                  className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
+                  className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
                   placeholder="you@example.com"
                 />
               </div>
@@ -110,13 +110,13 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   dir="ltr"
-                  className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-11 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
+                  className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-11 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 transition-all text-left"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-faint hover:text-white"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-faint hover:text-strong"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />

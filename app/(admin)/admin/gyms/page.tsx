@@ -63,7 +63,7 @@ export default function AdminGymsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ابحث باسم الجيم أو المالك أو الإيميل..."
-            className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
+            className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
           />
         </div>
       </div>

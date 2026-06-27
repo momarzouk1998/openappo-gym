@@ -146,7 +146,7 @@ export default function AdminGymEditPage() {
   }
 
   const inputClass =
-    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-strong focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   const addonsTotal = addons.reduce(
     (sum, key) => sum + (ADDONS[key as keyof typeof ADDONS]?.price ?? 0),
@@ -158,7 +158,7 @@ export default function AdminGymEditPage() {
       {/* Back */}
       <button
         onClick={() => router.push('/admin/gyms')}
-        className="flex items-center gap-2 text-sm text-muted-c hover:text-white transition-colors"
+        className="flex items-center gap-2 text-sm text-muted-c hover:text-strong transition-colors"
       >
         <ArrowRight className="w-4 h-4" />
         العودة للجيمات

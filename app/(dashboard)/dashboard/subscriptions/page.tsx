@@ -203,7 +203,7 @@ export default function SubscriptionsPage() {
   ]
 
   const inputClass =
-    'w-full bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
+    'w-full bg-app border border-app rounded-xl py-3 px-4 text-strong focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
 
   return (
     <div className="space-y-6">
@@ -234,13 +234,13 @@ export default function SubscriptionsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="ابحث باسم العضو أو التليفون..."
-              className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-white placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
+              className="w-full bg-app border border-app rounded-xl py-3 pr-11 pl-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-app border border-app rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
+            className="bg-app border border-app rounded-xl py-3 px-4 text-strong focus:outline-none focus:border-[#22C55E]/50 sm:w-44"
           >
             <option value="all">كل الحالات</option>
             <option value="active">فعّال</option>
@@ -388,7 +388,7 @@ export default function SubscriptionsPage() {
               </div>
               <button
                 onClick={closeRenew}
-                className="p-1.5 rounded-lg text-faint hover:bg-[#1F1F2E]"
+                className="p-1.5 rounded-lg text-faint hover:surface-2"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -497,7 +497,7 @@ export default function SubscriptionsPage() {
                     <div className="p-4 surface rounded-xl border border-app space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-c">تاريخ النهاية (مُحتسب)</span>
-                        <span className="font-medium text-white">
+                        <span className="font-medium text-strong">
                           {formatDate(end.toISOString())}
                         </span>
                       </div>
@@ -523,7 +523,7 @@ export default function SubscriptionsPage() {
                   <button
                     type="button"
                     onClick={closeRenew}
-                    className="px-5 py-3 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
+                    className="px-5 py-3 border border-app text-strong rounded-xl font-semibold hover:surface transition-all"
                   >
                     إلغاء
                   </button>
