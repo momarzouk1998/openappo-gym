@@ -80,7 +80,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   // Read gym addons from the store (populated from /api/auth/me).
   // super_admin sees all addons so they can preview every section.
-  const addons = userRole === 'super_admin'
+  // During trial, unlock ALL addons so the user can try them before buying.
+  const isTrial = gym?.status === 'trial'
+  const addons = userRole === 'super_admin' || isTrial
     ? addonItems.map((a) => a.key)
     : gym?.addons || []
   const activeAddons = addonItems.filter((item) => addons.includes(item.key))
@@ -149,10 +151,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Addons section */}
           {activeAddons.length > 0 && (
             <>
-              <div className="pt-4 pb-2 px-4">
+              <div className="pt-4 pb-2 px-4 flex items-center justify-between">
                 <span className="text-xs text-faint uppercase">
                   الإضافات
                 </span>
+                {isTrial && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[#22C55E]/15 text-[#4ADE80] font-medium">
+                    مفتوحة للتجربة
+                  </span>
+                )}
               </div>
               {activeAddons.map((item) => (
                 <Link

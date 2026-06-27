@@ -56,7 +56,11 @@ export async function POST(request: Request) {
       slug = `${slug}-${Date.now().toString(36)}`
     }
 
-    const basePlanPrice = plan === 'pro' ? 599 : 299
+      const basePlanPrice = plan === 'pro' ? 599 : 299
+
+    // Trial period: 14 days from now
+    const trialEndsAt = new Date()
+    trialEndsAt.setDate(trialEndsAt.getDate() + 14)
 
     // Create gym + user + profile in a transaction
     const result = await prisma.$transaction(async (tx) => {
@@ -72,6 +76,7 @@ export async function POST(request: Request) {
           ownerPhone: ownerPhone || '',
           ownerEmail,
           status: 'trial',
+          trialEndsAt,
           basePlanPrice,
           addons: (addons || []) as AddonKey[],
         },

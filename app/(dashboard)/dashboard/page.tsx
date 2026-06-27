@@ -59,6 +59,7 @@ export default function DashboardHome() {
 
   const gymName = gym?.name || 'جيمك'
   const userName = user?.fullName || ''
+  const isTrial = gym?.status === 'trial'
 
   return (
     <div className="space-y-6">
@@ -112,18 +113,41 @@ export default function DashboardHome() {
               <div className="text-sm text-muted-c">الاشتراكات الفعّالة</div>
             </div>
 
-            <div className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-11 h-11 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
-                  <Wallet className="w-5 h-5 text-[#22C55E]" />
+            {isTrial ? (
+              <Link
+                href="/dashboard/settings"
+                className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors group relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-[#22C55E]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="flex items-center justify-between mb-4 relative">
+                  <div className="w-11 h-11 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
+                    <Wallet className="w-5 h-5 text-[#22C55E]" />
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#22C55E]/15 text-[#4ADE80] font-medium">
+                    بعد الاشتراك
+                  </span>
                 </div>
-                <TrendingUp className="w-4 h-4 text-[#22C55E]" />
+                <div className="text-lg font-bold font-cairo mb-1 text-[#22C55E] relative">
+                  تتبّع الإيرادات
+                </div>
+                <div className="text-sm text-muted-c relative">
+                  اشترك عشان تشوف إيراداتك بالتفصيل
+                </div>
+              </Link>
+            ) : (
+              <div className="glass-card p-5 rounded-2xl hover:border-[#22C55E]/30 transition-colors">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-11 h-11 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
+                    <Wallet className="w-5 h-5 text-[#22C55E]" />
+                  </div>
+                  <TrendingUp className="w-4 h-4 text-[#22C55E]" />
+                </div>
+                <div className="text-3xl font-bold font-cairo mb-1">
+                  {formatCurrency(stats?.monthlyRevenue ?? 0)}
+                </div>
+                <div className="text-sm text-muted-c">إيرادات الشهر</div>
               </div>
-              <div className="text-3xl font-bold font-cairo mb-1">
-                {formatCurrency(stats?.monthlyRevenue ?? 0)}
-              </div>
-              <div className="text-sm text-muted-c">إيرادات الشهر</div>
-            </div>
+            )}
 
             <div className="glass-card p-5 rounded-2xl hover:border-[#F59E0B]/30 transition-colors">
               <div className="flex items-center justify-between mb-4">
@@ -145,7 +169,27 @@ export default function DashboardHome() {
               <h3 className="font-cairo font-bold text-lg mb-1">إيرادات آخر 6 شهور</h3>
               <p className="text-sm text-faint mb-6">إجمالي المدفوعات الشهرية</p>
 
-              {revenueChart.length > 0 ? (
+              {isTrial ? (
+                <div className="h-64 flex items-center justify-center">
+                  <div className="text-center max-w-sm">
+                    <div className="w-14 h-14 rounded-2xl bg-[#22C55E]/10 flex items-center justify-center mx-auto mb-4">
+                      <TrendingUp className="w-7 h-7 text-[#22C55E]" />
+                    </div>
+                    <p className="font-medium text-soft mb-1">
+                      تتبّع الإيرادات بالتفصيل
+                    </p>
+                    <p className="text-sm text-muted-c mb-4">
+                      بعد ما تشترك، هيظهرلك رسم بياني لإيراداتك الشهرية ومعدّل النمو
+                    </p>
+                    <Link
+                      href="/dashboard/settings"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-[#22C55E] text-white rounded-xl text-sm font-semibold hover:bg-[#16A34A] transition-colors"
+                    >
+                      اشترك لرؤية الإيرادات
+                    </Link>
+                  </div>
+                </div>
+              ) : revenueChart.length > 0 ? (
                 <div className="h-64" dir="ltr">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={revenueChart}>

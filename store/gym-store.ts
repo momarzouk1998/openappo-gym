@@ -6,6 +6,8 @@ interface GymData {
   slug: string
   status: string
   addons?: string[]
+  trialEndsAt?: string
+  basePlanPrice?: number
 }
 
 interface UserData {

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/Sidebar'
 import { Header } from '@/components/dashboard/Header'
+import { TrialBanner } from '@/components/dashboard/TrialBanner'
 import { GymProvider } from '@/components/GymProvider'
 
 const pageTitles: Record<string, string> = {
@@ -28,6 +29,13 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const getCurrentTitle = () => {
+    // Member detail route: /dashboard/members/<uuid> (not /new)
+    if (
+      pathname.startsWith('/dashboard/members/') &&
+      !pathname.endsWith('/new')
+    ) {
+      return 'تفاصيل العضو'
+    }
     const keys = Object.keys(pageTitles).sort((a, b) => b.length - a.length)
     for (const key of keys) {
       if (pathname === key || pathname.startsWith(key + '/')) {
@@ -49,6 +57,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             title={getCurrentTitle()}
             onMenuClick={() => setSidebarOpen(true)}
           />
+          <TrialBanner />
           <main className="p-4 sm:p-6 lg:p-8">{children}</main>
         </div>
       </div>

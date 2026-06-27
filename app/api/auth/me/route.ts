@@ -58,6 +58,8 @@ export async function GET() {
           status: activeGym.status,
           logoUrl: activeGym.logoUrl,
           addons: activeGym.addons,
+          trialEndsAt: activeGym.trialEndsAt,
+          basePlanPrice: activeGym.basePlanPrice,
         }
       : null,
     gyms,
