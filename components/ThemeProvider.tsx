@@ -6,10 +6,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="dark"
+      // No defaultTheme → respects OS preference on first visit.
+      // Once the user toggles, their choice is saved and wins.
       enableSystem
       disableTransitionOnChange
-      value={{ light: 'light', dark: 'dark' }}
     >
       {children}
     </NextThemesProvider>

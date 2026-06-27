@@ -20,8 +20,9 @@
   --font-inter: 'Inter', sans-serif;
 }
 
-/* DARK (default) */
-:root {
+/* DARK (default — applied as class="dark" by next-themes, or :root fallback) */
+:root,
+.dark {
   --bg-app: #0A0A0F;
   --surface: #111118;
   --surface-2: #1a1a24;
