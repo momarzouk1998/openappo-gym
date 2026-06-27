@@ -45,7 +45,7 @@ export function CTASection() {
               >
                 <Sparkles className="w-4 h-4 text-white" />
               </motion.div>
-              <span className="text-sm font-medium text-white">جاهز تبدأ؟</span>
+              <span className="text-sm font-medium text-strong">جاهز تبدأ؟</span>
             </motion.div>
 
             <motion.h2
@@ -53,7 +53,7 @@ export function CTASection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="font-cairo font-black text-4xl sm:text-5xl text-white mb-4"
+              className="font-cairo font-black text-4xl sm:text-5xl text-strong mb-4"
             >
               ابدأ تجربتك المجانية دلوقتي
             </motion.h2>
@@ -62,7 +62,7 @@ export function CTASection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="text-lg text-white/90 mb-8 max-w-xl mx-auto"
+              className="text-lg text-soft mb-8 max-w-xl mx-auto"
             >
               انضم لـ +50 جيم بيستخدموا OpenGym لإدارة أعمالهم بشكل أذكى
             </motion.p>
@@ -84,7 +84,7 @@ export function CTASection() {
               </Link>
             </motion.div>
 
-            <p className="mt-6 text-sm text-white/80">
+            <p className="mt-6 text-sm text-muted-c">
               مفيش كريدت كارد — مفيش التزام
             </p>
           </div>

@@ -124,7 +124,7 @@ export function Pricing() {
                     key={price}
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-5xl font-bold font-cairo text-white"
+                    className="text-5xl font-bold font-cairo text-strong"
                   >
                     {price.toLocaleString('ar-EG')}
                   </motion.span>
@@ -161,7 +161,7 @@ export function Pricing() {
                   className={`block text-center mt-8 py-3.5 rounded-xl font-semibold transition-all ${
                     isPopular
                       ? 'bg-[#22C55E] text-white hover:bg-[#16A34A] hover:shadow-lg hover:shadow-[#22C55E]/30'
-                      : 'border border-app text-white hover:surface'
+                      : 'border border-app text-strong hover:surface'
                   }`}
                 >
                   ابدأ تجربة مجانية 14 يوم

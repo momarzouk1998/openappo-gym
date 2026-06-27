@@ -22,7 +22,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isLight ? 'dark' : 'light')}
-      className="text-muted-c hover:text-white transition-colors"
+      className="text-muted-c hover:text-strong transition-colors"
       aria-label={isLight ? 'الوضع الغامق' : 'الوضع الفاتح'}
     >
       {isLight ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
@@ -61,7 +61,7 @@ export function Navbar() {
             >
               <Dumbbell className="w-5 h-5 text-white" />
             </motion.div>
-            <span className="font-cairo font-bold text-xl text-white">
+            <span className="font-cairo font-bold text-xl text-strong">
               Open<span className="text-[#22C55E]">Gym</span>
             </span>
           </Link>
@@ -77,7 +77,7 @@ export function Navbar() {
             >
               <Link
                 href={link.href}
-                className="text-sm text-muted-c hover:text-white transition-colors relative"
+                className="text-sm text-muted-c hover:text-strong transition-colors relative"
               >
                 {link.label}
               </Link>
@@ -91,7 +91,7 @@ export function Navbar() {
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
               href="/login"
-              className="px-4 py-2 text-sm text-muted-c hover:text-white transition-colors"
+              className="px-4 py-2 text-sm text-muted-c hover:text-strong transition-colors"
             >
               تسجيل الدخول
             </Link>
@@ -110,7 +110,7 @@ export function Navbar() {
         <motion.button
           whileTap={{ scale: 0.9 }}
           onClick={() => setOpen(!open)}
-          className="md:hidden p-2 text-white"
+          className="md:hidden p-2 text-strong"
           aria-label="القائمة"
         >
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -138,7 +138,7 @@ export function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="block py-3 px-4 text-muted-c hover:text-white hover:surface rounded-lg transition-colors"
+                    className="block py-3 px-4 text-muted-c hover:text-strong hover:surface rounded-lg transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -153,7 +153,7 @@ export function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="block py-3 px-4 text-muted-c hover:text-white hover:surface rounded-lg transition-colors"
+                  className="block py-3 px-4 text-muted-c hover:text-strong hover:surface rounded-lg transition-colors"
                 >
                   تسجيل الدخول
                 </Link>

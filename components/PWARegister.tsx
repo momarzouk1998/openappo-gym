@@ -202,7 +202,7 @@ export function PWARegister() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={dismissInstall}
-                  className="p-2 text-faint hover:text-white"
+                  className="p-2 text-faint hover:text-strong"
                   aria-label="إغلاق"
                 >
                   <X className="w-4 h-4" />
@@ -243,7 +243,7 @@ export function PWARegister() {
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={dismissNotifBanner}
-                  className="p-2 text-faint hover:text-white"
+                  className="p-2 text-faint hover:text-strong"
                   aria-label="إغلاق"
                 >
                   <X className="w-4 h-4" />

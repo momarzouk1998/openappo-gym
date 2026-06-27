@@ -165,7 +165,7 @@ export function Hero() {
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="#how"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-app text-white rounded-xl font-semibold hover:surface transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-app text-strong rounded-xl font-semibold hover:surface transition-all"
                 >
                   <Play className="w-4 h-4" />
                   شوف كيف يشتغل
@@ -294,7 +294,7 @@ export function Hero() {
             { value: 1000000, suffix: '+', label: 'جنيه إيرادات' },
           ].map((stat, i) => (
             <motion.div key={i} variants={itemVariants} className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold font-cairo text-white">
+              <div className="text-3xl sm:text-4xl font-bold font-cairo text-strong">
                 <Counter value={stat.value} suffix={stat.suffix} />
               </div>
               <div className="text-sm text-faint mt-1">{stat.label}</div>
