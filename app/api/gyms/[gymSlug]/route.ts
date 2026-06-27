@@ -58,7 +58,18 @@ export async function PATCH(
   }
 
   const body = await request.json()
-  const { name, phone, city, address } = body
+  const { name, phone, city, address, basePlanPrice, addons } = body
+
+  // Validate basePlanPrice if provided (must be a valid plan price)
+  if (basePlanPrice !== undefined) {
+    const validPrices = [299, 599] // starter, pro
+    if (!validPrices.includes(basePlanPrice)) {
+      return NextResponse.json(
+        { error: 'سعر الباقة غير صالح' },
+        { status: 400 }
+      )
+    }
+  }
 
   const updated = await prisma.gym.update({
     where: { id: gym.id },
@@ -67,8 +78,10 @@ export async function PATCH(
       ...(phone !== undefined && { phone: phone || null }),
       ...(city !== undefined && { city: city || null }),
       ...(address !== undefined && { address: address || null }),
+      ...(basePlanPrice !== undefined && { basePlanPrice }),
+      ...(addons !== undefined && { addons }),
     },
-    select: { id: true, name: true, slug: true },
+    select: { id: true, name: true, slug: true, basePlanPrice: true, addons: true },
   })
 
   return NextResponse.json({ success: true, gym: updated })

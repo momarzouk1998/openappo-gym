@@ -76,9 +76,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const userRole = user?.role || 'مدير'
   const userInitial = userName.charAt(0)
 
-  // Get gym addons from the gym object (not in store yet, but we can add later)
-  // For now, show no addons
-  const addons: string[] = []
+  // Read gym addons from the store (populated from /api/auth/me).
+  // super_admin sees all addons so they can preview every section.
+  const addons = userRole === 'super_admin'
+    ? addonItems.map((a) => a.key)
+    : gym?.addons || []
   const activeAddons = addonItems.filter((item) => addons.includes(item.key))
 
   const isActive = (href: string) =>

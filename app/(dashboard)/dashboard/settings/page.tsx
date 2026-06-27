@@ -3,14 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useGymStore } from '@/store/gym-store'
 import { formatCurrency } from '@/lib/utils'
+import { ADDONS } from '@/lib/addons'
 import {
   Building2,
-  Wallet,
   CreditCard,
   Loader2,
   CheckCircle2,
   Plus,
   Trash2,
+  Sparkles,
 } from 'lucide-react'
 
 interface GymDetails {
@@ -23,6 +24,7 @@ interface GymDetails {
   status: string
   basePlanPrice: number
   billingCycle: string
+  addons: string[]
   createdAt: string
 }
 
@@ -33,10 +35,10 @@ interface GymPlan {
   price: number
 }
 
-const planLabels: Record<string, number> = {
-  monthly: 299,
-  pro: 599,
-}
+const PLANS = [
+  { key: 'starter', name: 'Starter', price: 299, desc: 'للجيمات الصغيرة' },
+  { key: 'pro', name: 'Pro', price: 599, desc: 'كل المميزات' },
+] as const
 
 export default function SettingsPage() {
   const { gym } = useGymStore()
@@ -141,6 +143,56 @@ export default function SettingsPage() {
     }
   }
 
+  // --- Plan + Addons section state ---
+  const [selectedPrice, setSelectedPrice] = useState<number>(299)
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([])
+  const [addonsSaving, setAddonsSaving] = useState(false)
+  const [planError, setPlanError] = useState('')
+  const [planSaved, setPlanSaved] = useState(false)
+
+  // Sync local plan/addons state once gym data loads
+  useEffect(() => {
+    if (gymData) {
+      setSelectedPrice(gymData.basePlanPrice || 299)
+      setSelectedAddons(gymData.addons || [])
+    }
+  }, [gymData])
+
+  const toggleAddon = (key: string) => {
+    setSelectedAddons((prev) =>
+      prev.includes(key) ? prev.filter((a) => a !== key) : [...prev, key]
+    )
+  }
+
+  const handlePlanAddonsSave = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!gymSlug) return
+    setAddonsSaving(true)
+    setPlanError('')
+    setPlanSaved(false)
+    try {
+      const res = await fetch(`/api/gyms/${gymSlug}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          basePlanPrice: selectedPrice,
+          addons: selectedAddons,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'فشل الحفظ')
+      setGymData((prev) =>
+        prev ? { ...prev, basePlanPrice: selectedPrice, addons: selectedAddons } : prev
+      )
+      setPlanSaved(true)
+      setTimeout(() => setPlanSaved(false), 3000)
+    } catch (err) {
+      setPlanError(err instanceof Error ? err.message : 'حدث خطأ')
+    } finally {
+      setAddonsSaving(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -151,8 +203,6 @@ export default function SettingsPage() {
 
   const inputClass =
     'w-full bg-[#0A0A0F] border border-[#1F1F2E] rounded-xl py-3 px-4 text-white focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20'
-
-  const planName = gymData?.basePlanPrice && gymData.basePlanPrice >= 599 ? 'Pro' : 'Starter'
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -319,41 +369,149 @@ export default function SettingsPage() {
         </form>
       </div>
 
-      {/* Billing */}
-      <div className="glass-card p-6 rounded-2xl">
-        <div className="flex items-center gap-3 mb-6">
+      {/* Plan + Addons (interactive) */}
+      <form
+        onSubmit={handlePlanAddonsSave}
+        className="glass-card p-6 rounded-2xl space-y-5"
+      >
+        <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
-            <Wallet className="w-5 h-5 text-[#22C55E]" />
+            <Sparkles className="w-5 h-5 text-[#22C55E]" />
           </div>
-          <h3 className="font-cairo font-bold text-lg">الباقة والدفع</h3>
-        </div>
-
-        <div className="p-4 bg-[#111118] rounded-xl border border-[#1F1F2E]">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-[#94A3B8]">الباقة الحالية</span>
-            <span className="font-bold text-[#22C55E]">{planName}</span>
-          </div>
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-[#94A3B8]">السعر الشهري</span>
-            <span className="font-bold">{formatCurrency(gymData?.basePlanPrice ?? 299)}</span>
-          </div>
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-[#94A3B8]">الحالة</span>
-            <span className="font-bold text-[#F59E0B]">
-              {gymData?.status === 'trial' ? 'فترة تجريبية' : gymData?.status === 'active' ? 'فعّال' : gymData?.status}
-            </span>
-          </div>
-          <div className="pt-4 border-t border-[#1F1F2E]">
-            <p className="text-sm text-[#94A3B8] mb-2">للتجديد والدفع:</p>
-            <p className="text-sm">
-              انستاباي / فودافون كاش:{' '}
-              <span className="font-bold text-[#22C55E]" dir="ltr">
-                01558282760
-              </span>
+          <div>
+            <h3 className="font-cairo font-bold text-lg">الباقة والإضافات</h3>
+            <p className="text-xs text-[#64748B]">
+              غيّر باقتك أو فعّل/ألغِ الإضافات الإضافية
             </p>
           </div>
         </div>
-      </div>
+
+        {planError && (
+          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {planError}
+          </div>
+        )}
+        {planSaved && (
+          <div className="p-3 rounded-xl bg-[#22C55E]/10 border border-[#22C55E]/20 text-[#22C55E] text-sm flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            تم تحديث الباقة والإضافات بنجاح
+          </div>
+        )}
+
+        {/* Plan picker */}
+        <div className="grid grid-cols-2 gap-3">
+          {PLANS.map((plan) => {
+            const active = selectedPrice === plan.price
+            return (
+              <button
+                type="button"
+                key={plan.key}
+                onClick={() => setSelectedPrice(plan.price)}
+                className={`p-4 rounded-xl border-2 text-right transition-all ${
+                  active
+                    ? 'border-[#22C55E] bg-[#22C55E]/5'
+                    : 'border-[#1F1F2E] hover:border-[#22C55E]/30'
+                }`}
+              >
+                <div className="font-cairo font-bold text-lg mb-0.5">{plan.name}</div>
+                <div className="text-xs text-[#94A3B8] mb-2">{plan.desc}</div>
+                <div className="text-2xl font-bold text-[#22C55E]">
+                  {plan.price}
+                  <span className="text-xs text-[#64748B] font-normal"> ج/شهر</span>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Addons */}
+        <div>
+          <p className="text-sm font-medium mb-3 text-[#CBD5E1]">الإضافات</p>
+          <div className="space-y-2">
+            {Object.values(ADDONS).map((addon) => {
+              const active = selectedAddons.includes(addon.key)
+              return (
+                <label
+                  key={addon.key}
+                  className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                    active
+                      ? 'border-[#22C55E]/40 bg-[#22C55E]/5'
+                      : 'border-[#1F1F2E] hover:border-[#22C55E]/20'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    onChange={() => toggleAddon(addon.key)}
+                    className="w-5 h-5 rounded accent-[#22C55E]"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm">{addon.name}</div>
+                    <div className="text-xs text-[#94A3B8]">{addon.description}</div>
+                  </div>
+                  <span className="text-sm font-bold text-[#22C55E] whitespace-nowrap">
+                    +{addon.price} ج
+                  </span>
+                </label>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Price summary */}
+        {(() => {
+          const addonsTotal = selectedAddons.reduce(
+            (sum, key) => sum + (ADDONS[key as keyof typeof ADDONS]?.price ?? 0),
+            0
+          )
+          const total = selectedPrice + addonsTotal
+          return (
+            <div className="p-4 bg-[#111118] rounded-xl border border-[#1F1F2E] space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-[#94A3B8]">الباقة</span>
+                <span>
+                  {PLANS.find((p) => p.price === selectedPrice)?.name} —{' '}
+                  {formatCurrency(selectedPrice)}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-[#94A3B8]">الإضافات ({selectedAddons.length})</span>
+                <span>{formatCurrency(addonsTotal)}</span>
+              </div>
+              <div className="pt-2 border-t border-[#1F1F2E] flex justify-between font-bold">
+                <span>الإجمالي شهرياً</span>
+                <span className="text-[#22C55E]">{formatCurrency(total)}</span>
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* Payment note */}
+        <div className="p-3 bg-[#111118]/50 rounded-xl border border-[#1F1F2E]">
+          <p className="text-xs text-[#94A3B8]">
+            للحصول على الإضافات أو تغيير الباقة، تواصل معنا على:{' '}
+            <span className="font-bold text-[#22C55E]" dir="ltr">
+              01558282760
+            </span>{' '}
+            (انستاباي / فودافون كاش)
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          disabled={addonsSaving}
+          className="w-full py-3.5 bg-[#22C55E] text-white rounded-xl font-semibold hover:bg-[#16A34A] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {addonsSaving ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              جاري الحفظ...
+            </>
+          ) : (
+            'حفظ الباقة والإضافات'
+          )}
+        </button>
+      </form>
     </div>
   )
 }

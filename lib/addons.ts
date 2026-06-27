@@ -29,6 +29,13 @@ export const ADDONS = {
     price: 150,
     icon: 'calendar',
   },
+  branches: {
+    key: 'branches' as AddonKey,
+    name: 'إدارة الفروع',
+    description: 'إدارة فروع الجيم المتعددة',
+    price: 150,
+    icon: 'building',
+  },
   advanced_reports: {
     key: 'advanced_reports' as AddonKey,
     name: 'التقارير المتقدمة',

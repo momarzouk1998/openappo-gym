@@ -57,6 +57,7 @@ export async function GET() {
           slug: activeGym.slug,
           status: activeGym.status,
           logoUrl: activeGym.logoUrl,
+          addons: activeGym.addons,
         }
       : null,
     gyms,

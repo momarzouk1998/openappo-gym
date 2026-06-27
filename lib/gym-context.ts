@@ -115,7 +115,7 @@ export async function getUserGyms(userId: string, role: string) {
   if (role === 'super_admin') {
     return prisma.gym.findMany({
       orderBy: { createdAt: 'desc' },
-      select: { id: true, name: true, slug: true, logoUrl: true, status: true },
+      select: { id: true, name: true, slug: true, logoUrl: true, status: true, addons: true },
     })
   }
 
@@ -129,6 +129,6 @@ export async function getUserGyms(userId: string, role: string) {
 
   return prisma.gym.findMany({
     where: { id: profile.gymId },
-    select: { id: true, name: true, slug: true, logoUrl: true, status: true },
+    select: { id: true, name: true, slug: true, logoUrl: true, status: true, addons: true },
   })
 }

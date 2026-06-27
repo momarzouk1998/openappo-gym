@@ -5,6 +5,7 @@ interface GymData {
   name: string
   slug: string
   status: string
+  addons?: string[]
 }
 
 interface UserData {
