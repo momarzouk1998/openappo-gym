@@ -13,8 +13,8 @@ export async function GET() {
   const userId = session.user.id
   const role = session.user.role || 'gym_owner'
 
-  // Get user gyms
-  const gyms = await getUserGyms(userId, role)
+  // Get user gyms (returns { gyms, total, page, pageSize, totalPages })
+  const { gyms, total, page, pageSize, totalPages } = await getUserGyms(userId, role)
 
   // Determine the active gym
   let activeGym = null
@@ -63,5 +63,6 @@ export async function GET() {
         }
       : null,
     gyms,
+    gymsPagination: { total, page, pageSize, totalPages },
   })
 }

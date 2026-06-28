@@ -1,10 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft, Sparkles } from 'lucide-react'
 
 export function CTASection() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <section className="py-24 relative overflow-hidden">
       <motion.div
@@ -23,12 +25,12 @@ export function CTASection() {
           <motion.div
             className="absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
             animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity }}
+            transition={{ duration: 6, repeat: shouldReduceMotion ? 0 : Infinity }}
           />
           <motion.div
             className="absolute -bottom-20 -left-20 w-60 h-60 bg-white/10 rounded-full blur-3xl"
             animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity, delay: 2 }}
+            transition={{ duration: 6, repeat: shouldReduceMotion ? 0 : Infinity, delay: 2 }}
           />
 
           <div className="relative z-10">
@@ -41,7 +43,7 @@ export function CTASection() {
             >
               <motion.div
                 animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 4, repeat: shouldReduceMotion ? 0 : Infinity, ease: 'linear' }}
               >
                 <Sparkles className="w-4 h-4 text-white" />
               </motion.div>

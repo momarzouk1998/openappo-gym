@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRef, useState, useEffect, lazy, Suspense } from 'react'
-import { motion, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react'
 import { ArrowLeft, Play, Users, CreditCard, TrendingUp, Sparkles } from 'lucide-react'
 
 const Hero3D = lazy(() =>
@@ -79,6 +79,7 @@ const itemVariants = {
 }
 
 export function Hero() {
+  const shouldReduceMotion = useReducedMotion()
   const sectionRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -99,12 +100,12 @@ export function Hero() {
       <motion.div
         className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[#22C55E]/10 rounded-full blur-[120px] pointer-events-none"
         animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.9, 0.6] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 8, repeat: shouldReduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#22C55E]/5 rounded-full blur-[100px] pointer-events-none"
         animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        transition={{ duration: 10, repeat: shouldReduceMotion ? 0 : Infinity, ease: 'easeInOut', delay: 1 }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
@@ -207,7 +208,7 @@ export function Hero() {
                 <div className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: [0, -8, 8, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                    transition={{ duration: 4, repeat: shouldReduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
                     className="w-8 h-8 rounded-lg bg-[#22C55E]/20 flex items-center justify-center"
                   >
                     <Users className="w-4 h-4 text-[#22C55E]" />
@@ -271,7 +272,7 @@ export function Hero() {
             {/* Floating badges */}
             <motion.div
               animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              transition={{ duration: 3, repeat: shouldReduceMotion ? 0 : Infinity, ease: 'easeInOut' }}
               className="absolute -top-4 -left-4 glass-card px-4 py-2 rounded-xl z-20"
             >
               <span className="text-xs font-medium text-[#22C55E]">⚡ نمو +25%</span>
@@ -313,7 +314,7 @@ export function Hero() {
         <span className="text-xs text-faint">اكتشف المزيد</span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          transition={{ duration: 1.5, repeat: shouldReduceMotion ? 0 : Infinity }}
           className="w-5 h-8 rounded-full border-2 border-[#64748B]/50 flex items-start justify-center p-1"
         >
           <div className="w-1 h-2 rounded-full bg-[#64748B]" />

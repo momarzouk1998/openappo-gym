@@ -1,8 +1,8 @@
 'use client'
 
-import { useRef, Suspense } from 'react'
+import { useRef, useEffect, useState, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Float, Environment, ContactShadows, MeshDistortMaterial } from '@react-three/drei'
+import { Float, ContactShadows, MeshDistortMaterial } from '@react-three/drei'
 import * as THREE from 'three'
 
 // A stylized floating dumbbell built from primitives
@@ -97,41 +97,59 @@ function OrbitingSpheres() {
 }
 
 export function Hero3D() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(true)
+
+  // Pause 3D rendering when the hero section scrolls out of view
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <Canvas
-      camera={{ position: [0, 0.5, 6], fov: 45 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
-      style={{ width: '100%', height: '100%' }}
-    >
-      <Suspense fallback={null}>
-        {/* Lighting */}
-        <ambientLight intensity={0.4} />
-        <directionalLight position={[5, 8, 5]} intensity={1.5} color="#ffffff" />
-        <pointLight position={[-5, -3, -5]} intensity={0.8} color="#22C55E" />
-        <spotLight position={[0, 6, 3]} intensity={1} angle={0.4} penumbra={1} color="#4ADE80" />
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <Canvas
+        camera={{ position: [0, 0.5, 6], fov: 45 }}
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: true }}
+        frameloop={isVisible ? 'always' : 'never'}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <Suspense fallback={null}>
+          {/* Lighting — removed heavy <Environment preset="city" /> */}
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 8, 5]} intensity={1.5} color="#ffffff" />
+          <pointLight position={[-5, -3, -5]} intensity={0.8} color="#22C55E" />
+          <spotLight position={[0, 6, 3]} intensity={1} angle={0.4} penumbra={1} color="#4ADE80" />
+          {/* Hemisphere light for subtle ambient fill (replaces Environment) */}
+          <hemisphereLight args={['#ffffff', '#22C55E', 0.3]} />
 
-        {/* Main dumbbell floating */}
-        <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
-          <Dumbbell />
-        </Float>
+          {/* Main dumbbell floating */}
+          <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
+            <Dumbbell />
+          </Float>
 
-        {/* Atmosphere */}
-        <OrbitingSpheres />
+          {/* Atmosphere */}
+          <OrbitingSpheres />
 
-        {/* Environment for realistic reflections */}
-        <Environment preset="city" />
-
-        {/* Soft shadow */}
-        <ContactShadows
-          position={[0, -2.2, 0]}
-          opacity={0.4}
-          scale={10}
-          blur={2.5}
-          far={4}
-          color="#22C55E"
-        />
-      </Suspense>
-    </Canvas>
+          {/* Soft shadow */}
+          <ContactShadows
+            position={[0, -2.2, 0]}
+            opacity={0.4}
+            scale={10}
+            blur={2.5}
+            far={4}
+            color="#22C55E"
+          />
+        </Suspense>
+      </Canvas>
+    </div>
   )
 }

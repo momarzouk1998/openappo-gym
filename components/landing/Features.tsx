@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import {
   CreditCard,
   Wallet,
@@ -73,13 +73,15 @@ const cardVariants = {
 }
 
 export function Features() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <section id="features" className="py-24 relative overflow-hidden">
       {/* Background glow */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#22C55E]/5 rounded-full blur-[150px] pointer-events-none"
         animate={{ opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 8, repeat: Infinity }}
+        transition={{ duration: 8, repeat: shouldReduceMotion ? 0 : Infinity }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

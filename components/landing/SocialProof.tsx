@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { Star, Quote } from 'lucide-react'
 
 const testimonials = [
@@ -42,13 +42,15 @@ const cardVariants = {
 }
 
 export function SocialProof() {
+  const shouldReduceMotion = useReducedMotion()
+
   return (
     <section className="py-24 relative overflow-hidden">
       {/* Background glow */}
       <motion.div
         className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-[#22C55E]/5 rounded-full blur-[100px] pointer-events-none"
         animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.1, 1] }}
-        transition={{ duration: 8, repeat: Infinity }}
+        transition={{ duration: 8, repeat: shouldReduceMotion ? 0 : Infinity }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">

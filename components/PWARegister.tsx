@@ -27,6 +27,8 @@ export function PWARegister() {
 
     if (!('serviceWorker' in navigator)) return
 
+    let updateInterval: ReturnType<typeof setInterval> | undefined
+
     // Register service worker
     navigator.serviceWorker
       .register('/sw.js', { scope: '/' })
@@ -48,7 +50,7 @@ export function PWARegister() {
         })
 
         // Periodic update check (every hour)
-        setInterval(() => reg.update(), 60 * 60 * 1000)
+        updateInterval = setInterval(() => reg.update(), 60 * 60 * 1000)
       })
       .catch((err) => console.error('SW registration failed:', err))
 
@@ -83,6 +85,7 @@ export function PWARegister() {
       const timer = setTimeout(() => setShowNotifBanner(true), 5000)
       return () => {
         clearTimeout(timer)
+        if (updateInterval) clearInterval(updateInterval)
         window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
         window.removeEventListener('online', handleOnline)
         window.removeEventListener('offline', handleOffline)
@@ -90,6 +93,7 @@ export function PWARegister() {
     }
 
     return () => {
+      if (updateInterval) clearInterval(updateInterval)
       window.removeEventListener('beforeinstallprompt', handleBeforeInstall)
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)

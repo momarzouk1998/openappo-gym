@@ -57,8 +57,5 @@ export async function POST(
     },
   })
 
-  // Log who created it
-  await prisma.payment.updateMany({ where: { createdBy: undefined }, data: {} }).catch(() => {})
-
   return NextResponse.json({ success: true, member }, { status: 201 })
 }

@@ -49,34 +49,33 @@ export async function getDashboardStats(gymId: string) {
 
 export async function getRevenueChart(gymId: string, months = 6) {
   const now = new Date()
-  const result: { month: string; revenue: number; label: string }[] = []
+  const monthNames = [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+  ]
 
-  for (let i = months - 1; i >= 0; i--) {
+  // Build month windows upfront, then fire all aggregates in parallel (single round-trip batch)
+  const windows = Array.from({ length: months }, (_, idx) => {
+    const i = months - 1 - idx
     const start = new Date(now.getFullYear(), now.getMonth() - i, 1)
     const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1)
+    return { start, end }
+  })
 
-    const agg = await prisma.payment.aggregate({
-      where: {
-        gymId,
-        status: 'paid',
-        paidAt: { gte: start, lt: end },
-      },
-      _sum: { finalAmount: true },
-    })
+  const aggs = await Promise.all(
+    windows.map(({ start, end }) =>
+      prisma.payment.aggregate({
+        where: { gymId, status: 'paid', paidAt: { gte: start, lt: end } },
+        _sum: { finalAmount: true },
+      })
+    )
+  )
 
-    const monthNames = [
-      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
-      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
-    ]
-
-    result.push({
-      month: `${start.getFullYear()}-${start.getMonth() + 1}`,
-      revenue: agg._sum.finalAmount || 0,
-      label: monthNames[start.getMonth()],
-    })
-  }
-
-  return result
+  return windows.map(({ start }, idx) => ({
+    month: `${start.getFullYear()}-${start.getMonth() + 1}`,
+    revenue: aggs[idx]._sum.finalAmount || 0,
+    label: monthNames[start.getMonth()],
+  }))
 }
 
 // ========================================
@@ -445,20 +444,25 @@ export async function getReports(gymId: string, months = 6): Promise<ReportsData
     count: g._count,
   }))
 
-  // 3. Member growth — new members per month in window
-  const memberGrowth: { month: string; newMembers: number; label: string }[] = []
-  for (let i = months - 1; i >= 0; i--) {
+  // 3. Member growth — build windows upfront, fire all counts in parallel
+  const memberWindows = Array.from({ length: months }, (_, idx) => {
+    const i = months - 1 - idx
     const start = new Date(now.getFullYear(), now.getMonth() - i, 1)
     const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1)
-    const count = await prisma.member.count({
-      where: { gymId, createdAt: { gte: start, lt: end } },
-    })
-    memberGrowth.push({
-      month: `${start.getFullYear()}-${start.getMonth() + 1}`,
-      newMembers: count,
-      label: monthNames[start.getMonth()],
-    })
-  }
+    return { start, end }
+  })
+  const memberCounts = await Promise.all(
+    memberWindows.map(({ start, end }) =>
+      prisma.member.count({
+        where: { gymId, createdAt: { gte: start, lt: end } },
+      })
+    )
+  )
+  const memberGrowth = memberWindows.map(({ start }, idx) => ({
+    month: `${start.getFullYear()}-${start.getMonth() + 1}`,
+    newMembers: memberCounts[idx],
+    label: monthNames[start.getMonth()],
+  }))
 
   // 4. Subscriptions by status (snapshot)
   const statusGroups = await prisma.subscription.groupBy({

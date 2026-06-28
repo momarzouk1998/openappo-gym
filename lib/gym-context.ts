@@ -110,13 +110,30 @@ export async function getGymContextApi(
 
 /**
  * Get all gyms a user has access to (for the switcher + auto-redirect).
+ * For super_admin: supports pagination via page/pageSize params.
+ * For gym owners: returns their single gym (no pagination needed).
  */
-export async function getUserGyms(userId: string, role: string) {
+export async function getUserGyms(
+  userId: string,
+  role: string,
+  options?: { page?: number; pageSize?: number }
+) {
   if (role === 'super_admin') {
-    return prisma.gym.findMany({
-      orderBy: { createdAt: 'desc' },
-      select: { id: true, name: true, slug: true, logoUrl: true, status: true, addons: true, trialEndsAt: true, basePlanPrice: true },
-    })
+    const page = options?.page || 1
+    const pageSize = options?.pageSize || 20
+    const gymSelect = { id: true, name: true, slug: true, logoUrl: true, status: true, addons: true, trialEndsAt: true, basePlanPrice: true }
+
+    const [gyms, total] = await Promise.all([
+      prisma.gym.findMany({
+        orderBy: { createdAt: 'desc' },
+        select: gymSelect,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.gym.count(),
+    ])
+
+    return { gyms, total, page, pageSize, totalPages: Math.ceil(total / pageSize) }
   }
 
   // Gym owners/managers — find their gym via profile
@@ -125,10 +142,12 @@ export async function getUserGyms(userId: string, role: string) {
     select: { gymId: true },
   })
 
-  if (!profile?.gymId) return []
+  if (!profile?.gymId) return { gyms: [], total: 0, page: 1, pageSize: 20, totalPages: 0 }
 
-  return prisma.gym.findMany({
+  const gyms = await prisma.gym.findMany({
     where: { id: profile.gymId },
     select: { id: true, name: true, slug: true, logoUrl: true, status: true, addons: true, trialEndsAt: true, basePlanPrice: true },
   })
+
+  return { gyms, total: gyms.length, page: 1, pageSize: 20, totalPages: 1 }
 }

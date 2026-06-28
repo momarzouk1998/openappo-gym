@@ -5,9 +5,11 @@
  *   - API (GET): network-first with offline fallback
  *   - API (POST/PUT/DELETE): network with background sync queue
  */
-const SW_VERSION = 'v1.0.0';
+const SW_VERSION = 'v1.1.0';
 const STATIC_CACHE = `opengym-static-${SW_VERSION}`;
-const RUNTIME_CACHE = `opengym-runtime-${SW_VERSION}`;
+const RUNTIME_CACHE = `opengym-runtime`;
+// Maximum entries in runtime cache (prevents unbounded growth)
+const RUNTIME_CACHE_MAX = 100;
 const APP_SHELL = [
   '/',
   '/dashboard',
@@ -105,6 +107,16 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// ---- Helper: trim runtime cache to max entries (LRU-ish) ----
+async function trimRuntimeCache(cache) {
+  const keys = await cache.keys();
+  if (keys.length > RUNTIME_CACHE_MAX) {
+    // Delete oldest entries beyond limit
+    const toDelete = keys.slice(0, keys.length - RUNTIME_CACHE_MAX);
+    await Promise.all(toDelete.map((req) => cache.delete(req)));
+  }
+}
+
 // ---- Helper: cache strategies ----
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(RUNTIME_CACHE);
@@ -113,6 +125,7 @@ async function staleWhileRevalidate(request) {
     .then((response) => {
       if (response && response.status === 200) {
         cache.put(request, response.clone());
+        trimRuntimeCache(cache);
       }
       return response;
     })
@@ -127,6 +140,7 @@ async function cacheFirst(request) {
   if (response && response.status === 200) {
     const cache = await caches.open(RUNTIME_CACHE);
     cache.put(request, response.clone());
+    trimRuntimeCache(cache);
   }
   return response;
 }
@@ -137,6 +151,7 @@ async function networkFirst(request) {
     const response = await fetch(request);
     if (response && response.status === 200) {
       cache.put(request, response.clone());
+      trimRuntimeCache(cache);
     }
     return response;
   } catch (err) {
@@ -247,13 +262,20 @@ self.addEventListener('periodicsync', (event) => {
 async function refreshCaches() {
   const cache = await caches.open(RUNTIME_CACHE);
   const keys = await cache.keys();
-  await Promise.allSettled(
-    keys.map((req) =>
-      fetch(req).then((res) => {
-        if (res && res.ok) cache.put(req, res.clone());
-      })
-    )
-  );
+  // Only refresh API GET responses (skip static assets that rarely change)
+  const apiKeys = keys.filter((req) => new URL(req.url).pathname.startsWith('/api/'));
+  // Process in batches of 10 to avoid thundering herd
+  const BATCH = 10;
+  for (let i = 0; i < apiKeys.length; i += BATCH) {
+    const batch = apiKeys.slice(i, i + BATCH);
+    await Promise.allSettled(
+      batch.map((req) =>
+        fetch(req).then((res) => {
+          if (res && res.ok) cache.put(req, res.clone());
+        })
+      )
+    );
+  }
 }
 
 // ---- Push notifications ----
