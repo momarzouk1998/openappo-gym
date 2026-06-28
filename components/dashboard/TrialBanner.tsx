@@ -119,14 +119,14 @@ export function TrialBanner() {
 
             <div className="flex items-center gap-2 flex-shrink-0">
               <Link
-                href="/dashboard/settings"
+                href="/dashboard/plans"
                 className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                   isUrgent
                     ? 'bg-[#EF4444] text-white hover:bg-[#DC2626]'
                     : 'bg-[#22C55E] text-white hover:bg-[#16A34A]'
                 }`}
               >
-                اشترك الآن
+                شوف الباقات والأسعار
                 <ArrowLeft className="w-3.5 h-3.5" />
               </Link>
 

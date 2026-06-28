@@ -4,24 +4,30 @@ import bcrypt from 'bcryptjs'
 import { slugify } from '@/lib/utils'
 import type { AddonKey } from '@prisma/client'
 
+// All addons unlocked during 14-day trial (no extra_branch — covered by branches)
+const TRIAL_ADDONS: AddonKey[] = [
+  'expenses',
+  'staff',
+  'trainers',
+  'classes',
+  'branches',
+  'advanced_reports',
+]
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     const {
       gymName,
-      gymPhone,
       city,
-      address,
       ownerName,
       ownerEmail,
       ownerPassword,
       ownerPhone,
-      plan,
-      addons,
     } = body
 
-    // Validation
-    if (!gymName || !ownerName || !ownerEmail || !ownerPassword) {
+    // Validation — required fields
+    if (!gymName || !ownerName || !ownerEmail || !ownerPassword || !ownerPhone) {
       return NextResponse.json(
         { error: 'بيانات ناقصة. املأ الحقول المطلوبة.' },
         { status: 400 }
@@ -56,7 +62,8 @@ export async function POST(request: Request) {
       slug = `${slug}-${Date.now().toString(36)}`
     }
 
-      const basePlanPrice = plan === 'pro' ? 599 : 299
+    // Default: starter plan with all addons for trial
+    const basePlanPrice = 299
 
     // Trial period: 14 days from now
     const trialEndsAt = new Date()
@@ -69,16 +76,14 @@ export async function POST(request: Request) {
         data: {
           name: gymName,
           slug,
-          phone: gymPhone || null,
           city: city || null,
-          address: address || null,
           ownerName,
-          ownerPhone: ownerPhone || '',
+          ownerPhone,
           ownerEmail,
           status: 'trial',
           trialEndsAt,
           basePlanPrice,
-          addons: (addons || []) as AddonKey[],
+          addons: TRIAL_ADDONS,
         },
       })
 
@@ -107,12 +112,12 @@ export async function POST(request: Request) {
           gymId: gym.id,
           role: 'gym_owner',
           fullName: ownerName,
-          phone: ownerPhone || null,
+          phone: ownerPhone,
           isActive: true,
         },
       })
 
-      // 5. Create default subscription plan
+      // 5. Create default subscription plans
       await tx.gymPlan.create({
         data: {
           gymId: gym.id,

@@ -20,6 +20,7 @@ import {
   X,
   UserCircle,
   CalendarClock,
+  Crown,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 
@@ -205,6 +206,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           >
             <UserCircle className="w-5 h-5" />
             <span className="text-sm font-medium">الصفحة الشخصية</span>
+          </Link>
+
+          {/* Plans & Pricing */}
+          <Link
+            href="/dashboard/plans"
+            onClick={onClose}
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+              isActive('/dashboard/plans')
+                ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/20'
+                : 'text-muted-c hover:surface hover:text-strong'
+            }`}
+          >
+            <Crown className="w-5 h-5" />
+            <span className="text-sm font-medium">الباقات والأسعار</span>
           </Link>
 
           {/* Settings */}

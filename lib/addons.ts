@@ -32,7 +32,7 @@ export const ADDONS = {
   branches: {
     key: 'branches' as AddonKey,
     name: 'إدارة الفروع',
-    description: 'إدارة فروع الجيم المتعددة',
+    description: 'إدارة كل فروع جيمك من مكان واحد — أضف فروع جديدة وتابع كل فرع على حدة',
     price: 150,
     icon: 'building',
   },
@@ -43,13 +43,9 @@ export const ADDONS = {
     price: 80,
     icon: 'bar-chart',
   },
-  extra_branch: {
-    key: 'extra_branch' as AddonKey,
-    name: 'فرع إضافي',
-    description: 'يُضاف لكل فرع إضافي فوق الأول',
-    price: 150,
-    icon: 'git-branch',
-  },
+  // NOTE: 'extra_branch' enum value is kept in the DB schema for backward
+  // compatibility, but it is intentionally NOT exposed in ADDONS — the
+  // 'branches' addon above covers all multi-branch needs with a single price.
 } as const
 
 export type AddonInfo = (typeof ADDONS)[keyof typeof ADDONS]

@@ -12,25 +12,18 @@ import {
   Loader2,
   Building2,
   User,
-  CreditCard,
+  Gift,
 } from 'lucide-react'
-import { PLANS } from '@/lib/billing'
-import { ADDONS } from '@/lib/addons'
 
 type FormData = {
   // Gym
   gymName: string
-  gymPhone: string
   city: string
-  address: string
   // Owner
   ownerName: string
   ownerEmail: string
   ownerPassword: string
   ownerPhone: string
-  // Plan
-  plan: 'starter' | 'pro'
-  addons: string[]
 }
 
 export default function RegisterPage() {
@@ -40,28 +33,15 @@ export default function RegisterPage() {
   const [error, setError] = useState('')
   const [formData, setFormData] = useState<FormData>({
     gymName: '',
-    gymPhone: '',
     city: '',
-    address: '',
     ownerName: '',
     ownerEmail: '',
     ownerPassword: '',
     ownerPhone: '',
-    plan: 'starter',
-    addons: [],
   })
 
-  const updateField = (field: keyof FormData, value: string | string[]) => {
+  const updateField = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const toggleAddon = (key: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      addons: prev.addons.includes(key)
-        ? prev.addons.filter((a) => a !== key)
-        : [...prev.addons, key],
-    }))
   }
 
   const validateStep = (): boolean => {
@@ -81,6 +61,10 @@ export default function RegisterPage() {
         setError('البريد الإلكتروني مطلوب')
         return false
       }
+      if (!formData.ownerPhone.trim()) {
+        setError('رقم التليفون مطلوب')
+        return false
+      }
       if (formData.ownerPassword.length < 6) {
         setError('كلمة المرور لازم 6 حروف على الأقل')
         return false
@@ -90,6 +74,7 @@ export default function RegisterPage() {
   }
 
   const handleSubmit = async () => {
+    if (!validateStep()) return
     setLoading(true)
     setError('')
 
@@ -119,9 +104,6 @@ export default function RegisterPage() {
     } catch {
       setError('حدث خطأ في الاتصال، حاول مرة أخرى')
     } finally {
-      // Always reset loading — button never gets stuck on any path
-      // (matches login page pattern; was previously missing, causing the
-      // spinner to hang permanently on the success path / router back-out)
       setLoading(false)
     }
   }
@@ -131,13 +113,6 @@ export default function RegisterPage() {
   }
 
   const prevStep = () => setStep(step - 1)
-
-  const totalAddonsPrice = formData.addons.reduce(
-    (sum, key) => sum + (ADDONS[key as keyof typeof ADDONS]?.price ?? 0),
-    0
-  )
-  const planPrice = PLANS[formData.plan].price
-  const totalPrice = planPrice + totalAddonsPrice
 
   return (
     <div className="min-h-screen py-12 px-4 grid-bg relative overflow-hidden">
@@ -154,9 +129,9 @@ export default function RegisterPage() {
           </span>
         </Link>
 
-        {/* Stepper */}
+        {/* Stepper — 2 steps only */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          {[1, 2, 3].map((s) => (
+          {[1, 2].map((s) => (
             <div key={s} className="flex items-center gap-2">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center font-bold font-cairo transition-all ${
@@ -167,7 +142,7 @@ export default function RegisterPage() {
               >
                 {step > s ? <Check className="w-5 h-5" /> : s}
               </div>
-              {s < 3 && (
+              {s < 2 && (
                 <div
                   className={`w-12 h-px ${step > s ? 'bg-[#22C55E]' : 'bg-[#1F1F2E]'}`}
                 />
@@ -212,44 +187,16 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-soft">
-                      رقم تليفون الجيم
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.gymPhone}
-                      onChange={(e) => updateField('gymPhone', e.target.value)}
-                      dir="ltr"
-                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20 text-left"
-                      placeholder="01012345678"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-soft">
-                      المدينة
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.city}
-                      onChange={(e) => updateField('city', e.target.value)}
-                      className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
-                      placeholder="القاهرة"
-                    />
-                  </div>
-                </div>
-
                 <div>
                   <label className="block text-sm font-medium mb-2 text-soft">
-                    العنوان
+                    المدينة
                   </label>
                   <input
                     type="text"
-                    value={formData.address}
-                    onChange={(e) => updateField('address', e.target.value)}
+                    value={formData.city}
+                    onChange={(e) => updateField('city', e.target.value)}
                     className="w-full bg-app border border-app rounded-xl py-3 px-4 text-strong placeholder:text-faint focus:outline-none focus:border-[#22C55E]/50 focus:ring-2 focus:ring-[#22C55E]/20"
-                    placeholder="شارع التحرير، وسط البلد"
+                    placeholder="القاهرة"
                   />
                 </div>
               </div>
@@ -264,7 +211,7 @@ export default function RegisterPage() {
             </div>
           )}
 
-          {/* Step 2: Owner Info */}
+          {/* Step 2: Owner Info + Submit */}
           {step === 2 && (
             <div className="animate-fade-in">
               <div className="flex items-center gap-3 mb-6">
@@ -309,7 +256,7 @@ export default function RegisterPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 text-soft">
-                      تليفون المالك
+                      التليفون *
                     </label>
                     <input
                       type="tel"
@@ -345,122 +292,6 @@ export default function RegisterPage() {
                   <ArrowRight className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={nextStep}
-                  className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-[#22C55E] text-white rounded-xl font-semibold hover:bg-[#16A34A] transition-all"
-                >
-                  التالي
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Plan Selection */}
-          {step === 3 && (
-            <div className="animate-fade-in">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#22C55E]/10 flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-[#22C55E]" />
-                </div>
-                <div>
-                  <h2 className="font-cairo font-bold text-xl">اختر الباقة</h2>
-                  <p className="text-sm text-muted-c">
-                    تبدأ تجربة مجانية 14 يوم
-                  </p>
-                </div>
-              </div>
-
-              {/* Plan selection */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                {Object.values(PLANS).map((plan) => (
-                  <button
-                    key={plan.key}
-                    onClick={() => updateField('plan', plan.key)}
-                    className={`p-5 rounded-xl border-2 text-right transition-all ${
-                      formData.plan === plan.key
-                        ? 'border-[#22C55E] bg-[#22C55E]/5'
-                        : 'border-app hover:border-[#22C55E]/30'
-                    }`}
-                  >
-                    <div className="font-cairo font-bold text-lg mb-1">
-                      {plan.name}
-                    </div>
-                    <div className="text-2xl font-bold text-[#22C55E]">
-                      {plan.price}
-                      <span className="text-sm text-faint"> ج/شهر</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Addons */}
-              <div className="mb-6">
-                <h3 className="font-medium mb-3 text-soft">
-                  إضافات اختيارية
-                </h3>
-                <div className="space-y-2">
-                  {Object.values(ADDONS).map((addon) => (
-                    <label
-                      key={addon.key}
-                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
-                        formData.addons.includes(addon.key)
-                          ? 'border-[#22C55E]/40 bg-[#22C55E]/5'
-                          : 'border-app hover:border-[#22C55E]/20'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.addons.includes(addon.key)}
-                        onChange={() => toggleAddon(addon.key)}
-                        className="w-5 h-5 rounded accent-[#22C55E]"
-                      />
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">{addon.name}</div>
-                        <div className="text-xs text-muted-c">
-                          {addon.description}
-                        </div>
-                      </div>
-                      <span className="text-sm font-bold text-[#22C55E]">
-                        +{addon.price} ج
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price summary */}
-              <div className="p-4 surface rounded-xl border border-app mb-6">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-muted-c">
-                    باقة {PLANS[formData.plan].name}
-                  </span>
-                  <span>{planPrice} ج</span>
-                </div>
-                {formData.addons.map((key) => (
-                  <div
-                    key={key}
-                    className="flex justify-between text-sm mb-2"
-                  >
-                    <span className="text-muted-c">
-                      {ADDONS[key as keyof typeof ADDONS].name}
-                    </span>
-                    <span>{ADDONS[key as keyof typeof ADDONS].price} ج</span>
-                  </div>
-                ))}
-                <div className="pt-2 border-t border-app flex justify-between font-bold">
-                  <span>الإجمالي شهرياً</span>
-                  <span className="text-[#22C55E]">{totalPrice} ج</span>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={prevStep}
-                  className="px-6 py-3.5 border border-app text-strong rounded-xl font-semibold hover:surface transition-all"
-                >
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-                <button
                   onClick={handleSubmit}
                   disabled={loading}
                   className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-[#22C55E] text-white rounded-xl font-semibold hover:bg-[#16A34A] transition-all disabled:opacity-50"
@@ -468,13 +299,16 @@ export default function RegisterPage() {
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    'ابدأ التجربة المجانية'
+                    <>
+                      <Gift className="w-5 h-5" />
+                      ابدأ تجربتك المجانية
+                    </>
                   )}
                 </button>
               </div>
 
               <p className="text-center mt-4 text-xs text-faint">
-                التجربة المجانية 14 يوم، الدفع بعدها عبر انستاباي / فودافون كاش
+                🎁 تجربة مجانية 14 يوم — استمتع بكل المميزات بدون دفع
               </p>
             </div>
           )}
